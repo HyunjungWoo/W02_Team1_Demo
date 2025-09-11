@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal.Internal;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,7 +10,9 @@ public class PlayerController : MonoBehaviour
     public GameObject kunaiPrefab; // 던질 수 있는 칼날 프리팹
     public float thorwForce = 30f; // 던지는 힘
     public LineRenderer aimLine; // 조준선을 그리기 위한 LineRenderer
-
+    [Header("반동 설정")]
+    [SerializeField] private float selfForce = 1f; // 자신에게 가할 힘
+    private Rigidbody2D rb; // 자신의 Rigidbody2D를 담을 변수
     // 내부 변수
     private ThrowableKunai currentKunai; // 현재 던져진 칼날
     private Camera mainCamera; // 메인 카메라 참조
@@ -18,6 +21,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main; // 메인 카메라 참조 초기화
+        rb = GetComponent<Rigidbody2D>(); // 게임 시작 시 자신의 Rigidbody2D 컴포넌트를 찾아 연결
         if (aimLine != null)
         {
             aimLine.enabled = false; // 처음에는 조준선을 비활성화
@@ -107,9 +111,42 @@ public class PlayerController : MonoBehaviour
     }
     private void WarpToKunai()
     {
-        transform.position = currentKunai.transform.position;
-        Destroy(currentKunai.gameObject);
-        currentKunai = null;
+        // 1. 텔레포트할 위치를 미리 저장합니다.
+        Vector3 warpPosition = currentKunai.transform.position;
+        Debug.Log("텔포");
+
+        // 2. 쿠나이가 적에게 꽂혀 있는지 확인합니다. (쿠나이의 부모가 적인지 확인)
+        Transform enemyTransform = currentKunai.transform.parent;
+        if (enemyTransform != null && enemyTransform.CompareTag("Enemy"))
+        {
+            Debug.Log("쿠나이 적에게감");
+            // 3. 적의 스크립트를 가져와서 '갈라지며 죽는' 함수를 호출합니다! 💥
+            Enemy enemy = enemyTransform.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.DieAndSlice();
+            }
+            // 이 시점에서 원본 적과 쿠나이는 파괴됩니다.
+            // 4. 자신의 Rigidbody에 위쪽으로 힘을 가해 반동 효과를 줍니다.
+            if (rb != null)
+            {
+                // 기존 속도를 0으로 초기화하여 힘이 더 깔끔하게 들어가도록 합니다.
+                rb.linearVelocity = Vector2.zero;
+                // 위쪽으로 튀어 오르는 힘을 줍니다.
+                rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.left * selfForce, ForceMode2D.Impulse);
+            }
+
+        }
+        else
+        {
+            // 적에게 꽂힌 게 아니라면 쿠나이만 파괴
+            Destroy(currentKunai.gameObject);
+        }
+
+        // 4. 플레이어를 저장해 둔 위치로 이동시킵니다.
+        transform.position = warpPosition;
+        currentKunai = null; // 현재 쿠나이 참조를 비웁니다.
     }
 
 }

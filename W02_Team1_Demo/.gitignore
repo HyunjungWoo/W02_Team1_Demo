@@ -99,4 +99,4 @@ InitTestScene*.unity*
 /Assets/lnitTestScene*.unity*
 
 # ignore SampleScene
-/Assets/Scene/SampleScene*.unity*
+/Assets/Scenes/SampleScene*.unity*
