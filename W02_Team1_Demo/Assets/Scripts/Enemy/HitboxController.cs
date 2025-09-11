@@ -8,11 +8,11 @@ public class HitboxController : MonoBehaviour
 
     [Header("슬로우 모션 효과")]
     private float slowdownFactor = 0.3f; // 얼마나 느려지게 할지 (0.05 = 5%)
-    private float slowdownLength = 8f;  // 슬로우 모션 지속 시간 (초)
+    private float slowdownLength = 4f;  // 슬로우 모션 지속 시간 (초)
 
     [Header("카메라 줌 효과")]
     [SerializeField] private Camera mainCamera; // 메인 카메라를 인스펙터에서 연결
-    private float zoomInSize = 3f; // 줌 했을 때 카메라 크기 (작을수록 확대)
+    private float zoomInSize = 10f; // 줌 했을 때 카메라 크기 (작을수록 확대)
     private float originalCameraSize; // 원래 카메라 크기를 저장할 변수
 
     void Start()
