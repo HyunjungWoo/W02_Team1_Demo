@@ -70,7 +70,7 @@ public class ThrowableKunai : MonoBehaviour
         rb.linearVelocity = Vector2.zero; // 혹시 모를 속도 제거
 
         // Collider도 비활성화
-        GetComponent<Collider2D>().enabled = false;
+        //GetComponent<Collider2D>().enabled = false;
 
         // --- 적에게 꽂히기 ---
         transform.parent = enemy;
