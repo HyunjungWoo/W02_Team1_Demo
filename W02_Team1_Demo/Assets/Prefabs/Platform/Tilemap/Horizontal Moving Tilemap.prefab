@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4522826322806309440}
   - component: {fileID: 5420607202124779505}
   - component: {fileID: -7448236603268681244}
+  - component: {fileID: -8664652234798860894}
   m_Layer: 0
   m_Name: Horizontal Moving Tilemap
   m_TagString: Untagged
@@ -236,3 +237,18 @@ CompositeCollider2D:
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
   m_CompositeGameObject: {fileID: 6591778726923685457}
+--- !u!114 &-8664652234798860894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6591778726923685457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8612e44e728dc048b7025065a1a147c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  direction: 1
+  platformSpeed: 2
+  platformRange: 3
