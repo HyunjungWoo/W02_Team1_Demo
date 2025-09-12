@@ -1,18 +1,41 @@
 using UnityEngine;
 
+public enum ReflectionSurface
+{
+    Floor,
+    Ceiling,
+    LeftWall,
+    RightWall
+}
+
 public class ReflectionPlatform : Platform
 {
-    private void OnCollisionEnter2D(Collision2D collision)
+    [SerializeField] private ReflectionSurface surfaceType = ReflectionSurface.Floor;
+
+    private void OnTriggerEnter2D(Collider2D collider)
     {
-        // "Kunai" 태그를 가진 오브젝트만 반사
-        if (collision.gameObject.CompareTag("Player"))
+        if (collider.CompareTag("Kunai"))
         {
-            
-            Rigidbody2D rb = collision.rigidbody;
+            Rigidbody2D rb = collider.attachedRigidbody;
             if (rb != null)
             {
-                // 충돌 지점의 법선 벡터
-                Vector2 normal = collision.contacts[0].normal;
+                // 플랫폼 방향에 따라 노멀 벡터 지정
+                Vector2 normal = Vector2.up;
+                switch (surfaceType)
+                {
+                    case ReflectionSurface.Floor:
+                        normal = Vector2.up;
+                        break;
+                    case ReflectionSurface.Ceiling:
+                        normal = Vector2.down;
+                        break;
+                    case ReflectionSurface.LeftWall:
+                        normal = Vector2.right;
+                        break;
+                    case ReflectionSurface.RightWall:
+                        normal = Vector2.left;
+                        break;
+                }
 
                 // 현재 속도
                 Vector2 incomingVelocity = rb.linearVelocity;
@@ -23,7 +46,8 @@ public class ReflectionPlatform : Platform
                 // 속도 교체
                 rb.linearVelocity = reflectedVelocity;
 
-                Debug.DrawRay(collision.contacts[0].point, reflectedVelocity, Color.red, 1f);
+                // 디버그 표시
+                Debug.DrawRay(collider.transform.position, reflectedVelocity, Color.red, 1f);
             }
         }
     }
