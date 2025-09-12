@@ -83,4 +83,9 @@ public class ThrowableKunai : MonoBehaviour
     {
         return hitNormal;
     }
+
+    public void SetHitNormal(Vector2 normal_)
+    {
+        hitNormal = normal_;
+    }
 }
