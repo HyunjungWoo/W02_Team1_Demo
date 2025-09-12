@@ -4,7 +4,7 @@ public class ThrowableKunai : MonoBehaviour
 {
     private Rigidbody2D rb;
     private bool isStuck = false;
-
+    public GameObject borderObject;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private void Awake()
@@ -24,11 +24,23 @@ public class ThrowableKunai : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        // "Border"라는 이름의 자식 오브젝트를 찾아서 활성화
+        // GameObject border = transform.Find("Border").gameObject;
+        // if (border != null)
+        // {
+        //     border.SetActive(true);
+        // }
+
+        // 또는 public 변수로 할당된 borderObject를 활성화
+        if (borderObject != null)
+        {
+            borderObject.SetActive(true);
+        }
         if (!isStuck && collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
 
             isStuck = true;
-
+           
             // rb.useFullKinematicContacts = true; // 충돌 감지를 유지하면서 물리적 움직임을 멈춥니다
             rb.linearVelocity = Vector2.zero; // 속도를 0으로 설정하여 움직임을 멈춥니다
             //rb.angularVelocity = 0f; // 회전 속도를 0으로 설정하여 회전을 멈춥니다
