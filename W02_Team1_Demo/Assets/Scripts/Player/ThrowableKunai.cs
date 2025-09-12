@@ -56,6 +56,23 @@ public class ThrowableKunai : MonoBehaviour
         {
             StickToEnemy(collision.transform);
         }
+
+        if (!isStuck && collision.CompareTag("RotationPlatform"))
+        {
+            isStuck = true;
+            rb.bodyType = RigidbodyType2D.Kinematic;
+            rb.linearVelocity = Vector2.zero;
+
+            RotationPlatform platform = collision.GetComponent<RotationPlatform>();
+
+            if (platform != null)
+            { // 현재 위치와 Normal을 local로 변환해서 전달
+                Vector3 localPos = platform.transform.InverseTransformPoint(transform.position);
+                Vector2 localNormal = platform.transform.InverseTransformDirection(Vector2.up); // 여기서 RotationPlatform 쪽 함수 호출
+                platform.SetKunaiTransform(this, localPos, localNormal);
+            }
+        }
+
     }
 
     private void StickToEnemy(Transform enemy)
