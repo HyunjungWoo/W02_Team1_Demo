@@ -58,7 +58,6 @@ public class ScriptableStats : ScriptableObject
     public float DashPower = 50f; // 대시 속도
     public float DashDuration = 0.2f; // 대시 지속 시간
     public float DashCooldown = 1f; // 대시 쿨타임
-    public int MaxDashes = 1; // 최대 대시 횟수
 
     [Header("WALLS")]
     public float WallSlideSpeed = 5f; // 벽 미끄러지는 속도

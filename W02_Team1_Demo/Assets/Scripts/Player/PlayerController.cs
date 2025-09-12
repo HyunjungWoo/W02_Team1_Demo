@@ -23,14 +23,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
     #region 대시 관련 변수
     private bool    _isDashing;
     private float   _dashTimeLeft;
-    private float _dashCooldownTimer; 
+    private float   _dashCooldownTimer;
 
     #endregion
 
     #region 벽타기 관련 변수
     private bool _onWall;
     private bool _isWallSliding;
-    private int _wallDirection;
+    private int  _wallDirection;
     #endregion
 
     #region 점프하기 변수 
@@ -91,7 +91,6 @@ private void Start()
         _time += Time.deltaTime;
         GatherInput();
         HandleKunaiActions();
-
         // 대쉬 쿨타임 처리
         HandleDashCooldown();
     }
@@ -163,6 +162,8 @@ private void Start()
         {
             if (currentKunai != null && currentKunai.IsStuck())
             {
+                // 대쉬 쿨타임 초기화
+                _dashCooldownTimer = 0;
                 WarpToKunai();
             }
         }
@@ -284,12 +285,12 @@ private void Start()
             if (dashDirection == Vector2.zero)
             {
                 dashDirection = new Vector2(transform.localScale.x, 0); // 기본적으로 캐릭터가 바라보는 방향으로 대시
+
             }
 
             _isDashing = true;
             _dashTimeLeft = _stats.DashDuration;
             _frameVelocity = dashDirection.normalized * _stats.DashPower; // 대시 속도 설정
-
             _dashCooldownTimer = _stats.DashCooldown; // 쿨타임 초기화
         }
 
@@ -308,6 +309,15 @@ private void Start()
     // Horizontal
     private void HandleDirection()
     {
+        if (_frameInput.Move.x != 0)
+        {
+            // Mathf.Sign() 함수는 입력값이 양수면 1, 음수면 -1을 반환합니다.
+            // 이를 이용하여 캐릭터의 localScale.x 값을 1 또는 -1로 만들어 방향을 뒤집습니다.
+            transform.localScale = new Vector3(Mathf.Sign(_frameInput.Move.x), 1, 1);
+        }
+        // -----------------------------------------
+
+        // 기존 이동 로직 (수정 없음)
         if (_frameInput.Move.x == 0)
         {
             var deceleration = _grounded ? _stats.GroundDeceleration : _stats.AirDeceleration;
@@ -322,6 +332,8 @@ private void Start()
     // Gravity
     private void HandleGravity()
     {
+        if(_isDashing) return;
+
         if (_grounded && _frameVelocity.y <= 0f)
         {
             _frameVelocity.y = _stats.GroundingForce;
