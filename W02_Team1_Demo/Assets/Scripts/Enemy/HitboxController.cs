@@ -15,6 +15,9 @@ public class HitboxController : MonoBehaviour
     private float zoomInSize = 10f; // 줌 했을 때 카메라 크기 (작을수록 확대)
     private float originalCameraSize; // 원래 카메라 크기를 저장할 변수
 
+    // 폭발 프리펩
+    public GameObject explosionPrefab;
+
     void Start()
     {
         // 게임 시작 시, 원래 카메라 크기를 저장해 둡니다.
@@ -33,6 +36,7 @@ public class HitboxController : MonoBehaviour
 
             // 적을 튕겨냅니다.
             KnockbackEnemy(collision);
+            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
         }
     }
 
