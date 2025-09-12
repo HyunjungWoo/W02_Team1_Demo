@@ -57,14 +57,17 @@ public class MovingPlatform : Platform
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            var movement = collision.gameObject.GetComponent<characterMovement>();
-            if (movement != null)
+            var controller = collision.gameObject.GetComponent<PlayerController>();
+            if (controller != null)
             {
                 // 플랫폼 이동량 계산
                 Vector2 delta = rb.position - lastPosition;
 
+                // 플레이어가 입력 중인지 판별 (좌우 이동 입력이 0이 아닐 때)
+                bool playerMoving = controller.FrameInput.x != 0;
+
                 // 플레이어가 입력 중이 아니면 플랫폼과 함께 이동
-                if (!movement.pressingKey)
+                if (!playerMoving)
                 {
                     collision.rigidbody.position += delta;
                 }
