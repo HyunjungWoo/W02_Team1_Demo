@@ -1,30 +1,59 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal.Internal;
 using UnityEngine.UIElements;
 
-public class PlayerController : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))] // 연결하지 않아도 자동으로 연결
+public class PlayerController : MonoBehaviour, IPlayerController
 {
-    [Header("던지기 설정")]
-    public GameObject kunaiPrefab; // 던질 수 있는 칼날 프리팹
-    public float thorwForce = 30f; // 던지는 힘
-    public LineRenderer aimLine; // 조준선을 그리기 위한 LineRenderer
-    [Header("반동 설정")]
-    [SerializeField] private float selfForce = 2f; // 자신에게 가할 힘
-    private Rigidbody2D rb; // 자신의 Rigidbody2D를 담을 변수
-    // 내부 변수
-    private ThrowableKunai currentKunai; // 현재 던져진 칼날
-    private Camera mainCamera; // 메인 카메라 참조
-    private bool isAiming = false; // 조준 중인지 여부
+    #region Tarodev 이동 관련 변수
+    // 중요: 이 변수는 반드시 Inspector에서 할당해주어야 합니다!
+    [SerializeField] private ScriptableStats _stats;
+    private Rigidbody2D _rb;
+    private CapsuleCollider2D _col;
+    private FrameInput _frameInput;
+    private Vector2 _frameVelocity;
+    private bool _cachedQueryStartInColliders;
+    private float _time;
+    #endregion
 
-    void Start()
+    #region 쿠나이 관련 변수
+    [Header("던지기 설정")]
+    public GameObject kunaiPrefab;
+    public float thorwForce = 30f;
+    public LineRenderer aimLine;
+
+    [Header("반동 설정")]
+    [SerializeField] private float selfForce = 2f;
+
+    private ThrowableKunai currentKunai;
+    private Camera mainCamera;
+    private bool isAiming = false;
+    #endregion
+
+    #region 인터페이스 구현
+    public Vector2 FrameInput => _frameInput.Move;
+    public event Action<bool, float> GroundedChanged;
+    public event Action Jumped;
+    #endregion
+
+    private void Awake()
     {
-        mainCamera = Camera.main; // 메인 카메라 참조 초기화
-        rb = GetComponent<Rigidbody2D>(); // 게임 시작 시 자신의 Rigidbody2D 컴포넌트를 찾아 연결
+        // Tarodev의 Awake() 내용: 필수 컴포넌트 초기화
+        _rb = GetComponent<Rigidbody2D>();
+        _col = GetComponent<CapsuleCollider2D>();
+        _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
+    }
+
+    private void Start()
+    {
+        // 직접 만드신 Start() 내용: 카메라 및 조준선 초기화
+        mainCamera = Camera.main;
         if (aimLine != null)
         {
-            aimLine.enabled = false; // 처음에는 조준선을 비활성화
+            aimLine.enabled = false;
         }
         else
         {
@@ -34,127 +63,231 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0)) // 왼쪽 버튼을 누르는 순간
+        // Tarodev의 시간 추적 및 입력 수집
+        _time += Time.deltaTime;
+        GatherInput();
+
+        // 직접 만드신 쿠나이 조준 및 워프 로직
+        HandleKunaiActions();
+    }
+
+    private void FixedUpdate()
+    {
+        // Tarodev의 물리 기반 이동 처리 (수정 없음)
+        CheckCollisions();
+        HandleJump();
+        HandleDirection();
+        HandleGravity();
+        ApplyMovement();
+    }
+
+    #region 입력 처리 (Input Handling)
+
+    private void GatherInput()
+    {
+        // Tarodev의 이동 및 점프 입력 처리
+        _frameInput = new FrameInput
         {
-            isAiming = true; // 조준 시작
-            aimLine.enabled = true; // 조준선 활성화
+            JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
+            JumpHeld = Input.GetButton("Jump") || Input.GetKey(KeyCode.C),
+            Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
+        };
+
+        if (_stats.SnapInput)
+        {
+            _frameInput.Move.x = Mathf.Abs(_frameInput.Move.x) < _stats.HorizontalDeadZoneThreshold ? 0 : Mathf.Sign(_frameInput.Move.x);
+            _frameInput.Move.y = Mathf.Abs(_frameInput.Move.y) < _stats.VerticalDeadZoneThreshold ? 0 : Mathf.Sign(_frameInput.Move.y);
+        }
+
+        if (_frameInput.JumpDown)
+        {
+            _jumpToConsume = true;
+            _timeJumpWasPressed = _time;
+        }
+    }
+
+    private void HandleKunaiActions()
+    {
+        // 기존 Update()에 있던 쿠나이 관련 로직을 별도의 함수로 정리
+        if (Input.GetMouseButtonDown(0))
+        {
+            isAiming = true;
+            aimLine.enabled = true;
         }
 
         if (isAiming)
         {
-            UpdateAimLine(); // 조준선 업데이트
+            UpdateAimLine();
         }
 
-        if (Input.GetMouseButtonUp(0)) // 왼쪽 버튼을 떼는 순간
+        if (Input.GetMouseButtonUp(0))
         {
             if (isAiming)
             {
-                ThrowKunai(); // 칼날 던지기
-                isAiming = false; // 조준 종료
-                aimLine.enabled = false; // 조준선 비활성화
+                ThrowKunai();
+                isAiming = false;
+                aimLine.enabled = false;
             }
         }
 
         if (Input.GetMouseButton(1))
-        { // 마우스 우클릭을 누르면
+        {
             if (currentKunai != null && currentKunai.IsStuck())
             {
-               WarpToKunai(); // 칼날 위치로 순간이동
+                WarpToKunai();
             }
         }
-
-
     }
-    
+
+    #endregion
+
+    #region 쿠나이 로직 (Kunai Logic)
+
     private void UpdateAimLine()
     {
-        Vector2 playerPosition = transform.position; // 플레이어 위치
-
-        Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition); // 마우스 위치
-
-        Vector2 aimDirection = (mousePosition - playerPosition).normalized; // 조준 방향 계산
-
-        aimLine.SetPosition(0, playerPosition); // 조준선 시작점 설정
-        // 조준선 길이 설정
-        aimLine.SetPosition(1, playerPosition + aimDirection * 5f); // 조준선 끝점 설정 (길이 5)
+        Vector2 playerPosition = transform.position;
+        Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 aimDirection = (mousePosition - playerPosition).normalized;
+        aimLine.SetPosition(0, playerPosition);
+        aimLine.SetPosition(1, playerPosition + aimDirection * 5f);
     }
 
     private void ThrowKunai()
     {
+        if (currentKunai != null) Destroy(currentKunai.gameObject);
+
         Vector2 playerPosition = transform.position;
         Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-       
-        // 방향 벡터 계산
-        Vector2 thorwDirection = (mousePosition - playerPosition).normalized;
+        Vector2 throwDirection = (mousePosition - playerPosition).normalized;
+        float angle = Mathf.Atan2(throwDirection.y, throwDirection.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.Euler(0, 0, angle);
 
-        // 회전 로직
-        float angleRad = Mathf.Atan2(thorwDirection.y, thorwDirection.x);
-
-        // 라디안을 우리가 사용하는 각도로 변환
-        float angleDeg = angleRad * Mathf.Rad2Deg;
-
-        Quaternion rotation = Quaternion.Euler(0, 0, angleDeg);
-
-        // 기존 쿠나이가 있다면 파괴 ( 새로운 쿠나이를 던지기 전에 이전 쿠나이 정리)
-        if (currentKunai != null)
-        {
-            Destroy(currentKunai.gameObject);
-        }
-
-        // 쿠나이 생성 및 던지기
         GameObject kunaiInstance = Instantiate(kunaiPrefab, playerPosition, rotation);
         currentKunai = kunaiInstance.GetComponent<ThrowableKunai>();
-
-        // 생성된 쿠나이에 힘을 가해 날려보냄
-        // ForceMode2D.Impulse를 사용하여 순간적인 힘을 가함
-        kunaiInstance.GetComponent<Rigidbody2D>().AddForce(thorwDirection * thorwForce, ForceMode2D.Impulse);
+        kunaiInstance.GetComponent<Rigidbody2D>().AddForce(throwDirection * thorwForce, ForceMode2D.Impulse);
     }
+
     private void WarpToKunai()
     {
-        // 추가: 순간이동 전 플레이어의 위치를 저장합니다.
-        Vector2 playerPosBeforeWarp = transform.position;
-        // 1. 텔레포트할 위치를 미리 저장합니다.
         Vector3 warpPosition = currentKunai.transform.position;
-        Debug.Log("텔포");
+        Destroy(currentKunai.gameObject); // 워프 후 쿠나이는 파괴
+        transform.position = warpPosition;
 
-        // 2. 쿠나이가 적에게 꽂혀 있는지 확인합니다. (쿠나이의 부모가 적인지 확인)
-        Transform enemyTransform = currentKunai.transform.parent;
-        if (enemyTransform != null && enemyTransform.CompareTag("Enemy"))
+        // 반동 효과
+        _rb.linearVelocity = Vector2.zero;
+        _rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
+
+        currentKunai = null;
+    }
+
+    #endregion
+
+    #region Tarodev 이동 로직 (수정 없음)
+
+    // Collisions
+    private float _frameLeftGrounded = float.MinValue;
+    private bool _grounded;
+
+    private void CheckCollisions()
+    {
+        Physics2D.queriesStartInColliders = false;
+
+        bool groundHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down, _stats.GrounderDistance, ~_stats.PlayerLayer);
+        bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up, _stats.GrounderDistance, ~_stats.PlayerLayer);
+
+        if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
+
+        if (!_grounded && groundHit)
         {
-            Debug.Log("쿠나이 적에게감");
-            // 3. 적의 스크립트를 가져와서 '갈라지며 죽는' 함수를 호출합니다! 💥
-            Enemy enemy = enemyTransform.GetComponent<Enemy>();
-            if (enemy != null)
-            {
-                enemy.DieAndSlice();
-            }
-            // 이 시점에서 원본 적과 쿠나이는 파괴됩니다.
-            // 4. 자신의 Rigidbody에 위쪽으로 힘을 가해 반동 효과를 줍니다.
-            if (rb != null)
-            {
-                // 기존 속도를 0으로 초기화하여 힘이 더 깔끔하게 들어가도록 합니다.
-                rb.linearVelocity = Vector2.zero;
-                // '원래 내 위치'에서 '적이 있던 위치'를 빼서 반대 방향을 계산합니다.
-                Vector2 knockbackDirection = (playerPosBeforeWarp - (Vector2)warpPosition).normalized;
+            _grounded = true;
+            _coyoteUsable = true;
+            _bufferedJumpUsable = true;
+            _endedJumpEarly = false;
+            GroundedChanged?.Invoke(true, Mathf.Abs(_frameVelocity.y));
+        }
+        else if (_grounded && !groundHit)
+        {
+            _grounded = false;
+            _frameLeftGrounded = _time;
+            GroundedChanged?.Invoke(false, 0);
+        }
 
-                // 만약 방향 벡터가 0이라면 (제자리에서 텔레포트한 경우) 위쪽으로 살짝 튕겨줍니다.
-               
-                knockbackDirection = Vector2.up;
+        Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
+    }
 
-                // 계산된 '적 반대 방향'으로 힘을 가합니다.
-                rb.AddForce(knockbackDirection * selfForce, ForceMode2D.Impulse);
-            }
+    // Jumping
+    private bool _jumpToConsume;
+    private bool _bufferedJumpUsable;
+    private bool _endedJumpEarly;
+    private bool _coyoteUsable;
+    private float _timeJumpWasPressed;
 
+    private bool HasBufferedJump => _bufferedJumpUsable && _time < _timeJumpWasPressed + _stats.JumpBuffer;
+    private bool CanUseCoyote => _coyoteUsable && !_grounded && _time < _frameLeftGrounded + _stats.CoyoteTime;
+
+    private void HandleJump()
+    {
+        if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
+        if (!_jumpToConsume && !HasBufferedJump) return;
+        if (_grounded || CanUseCoyote) ExecuteJump();
+        _jumpToConsume = false;
+    }
+
+    private void ExecuteJump()
+    {
+        _endedJumpEarly = false;
+        _timeJumpWasPressed = 0;
+        _bufferedJumpUsable = false;
+        _coyoteUsable = false;
+        _frameVelocity.y = _stats.JumpPower;
+        Jumped?.Invoke();
+    }
+
+    // Horizontal
+    private void HandleDirection()
+    {
+        if (_frameInput.Move.x == 0)
+        {
+            var deceleration = _grounded ? _stats.GroundDeceleration : _stats.AirDeceleration;
+            _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, 0, deceleration * Time.fixedDeltaTime);
         }
         else
         {
-            // 적에게 꽂힌 게 아니라면 쿠나이만 파괴
-            Destroy(currentKunai.gameObject);
+            _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, _frameInput.Move.x * _stats.MaxSpeed, _stats.Acceleration * Time.fixedDeltaTime);
         }
-
-        // 4. 플레이어를 저장해 둔 위치로 이동시킵니다.
-        transform.position = warpPosition;
-        currentKunai = null; // 현재 쿠나이 참조를 비웁니다.
     }
 
+    // Gravity
+    private void HandleGravity()
+    {
+        if (_grounded && _frameVelocity.y <= 0f)
+        {
+            _frameVelocity.y = _stats.GroundingForce;
+        }
+        else
+        {
+            var inAirGravity = _stats.FallAcceleration;
+            if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
+            _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
+        }
+    }
+
+    private void ApplyMovement() => _rb.linearVelocity = _frameVelocity;
+
+    #endregion
+}
+
+// 인터페이스와 구조체는 클래스 밖, 네임스페이스 안에 둡니다.
+public struct FrameInput
+{
+    public bool JumpDown;
+    public bool JumpHeld;
+    public Vector2 Move;
+}
+
+public interface IPlayerController
+{
+    public event Action<bool, float> GroundedChanged;
+    public event Action Jumped;
+    public Vector2 FrameInput { get; }
 }
