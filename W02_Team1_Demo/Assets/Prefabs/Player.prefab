@@ -251,7 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 059427351f373eb46b05dc114b22efac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stats: {fileID: 11400000, guid: 05e6a06c5af93134ab98ff12e2c27265, type: 2}
+  stats: {fileID: 11400000, guid: 05e6a06c5af93134ab98ff12e2c27265, type: 2}
   kunaiPrefab: {fileID: 4995944801069903025, guid: 770b99388355d264aa7254d8c0b1ef55, type: 3}
   thorwForce: 30
   aimLine: {fileID: 8880927873227072472}
