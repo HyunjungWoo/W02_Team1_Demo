@@ -5,22 +5,17 @@ public class ThrowableKunai : MonoBehaviour
     private Rigidbody2D rb;
     private bool isStuck = false;
     public GameObject borderObject;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    private Vector2 hitNormal = Vector2.zero; //  벽에 꽂힌 방향 저장
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
     }
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
     void Update()
     {
         // --- 스프라이트 방향 회전 ---
-        // 멈춰있지 않고, 속도가 충분히 클 때만 방향 갱신
         if (!isStuck && rb.linearVelocity.sqrMagnitude > 0.01f)
         {
             float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
@@ -30,66 +25,62 @@ public class ThrowableKunai : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // "Border"라는 이름의 자식 오브젝트를 찾아서 활성화
-        // GameObject border = transform.Find("Border").gameObject;
-        // if (border != null)
-        // {
-        //     border.SetActive(true);
-        // }
-
-        // 또는 public 변수로 할당된 borderObject를 활성화
         if (borderObject != null)
         {
             borderObject.SetActive(true);
         }
+
+        // 벽에 꽂힌 경우
         if (!isStuck && collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
         {
-
             isStuck = true;
-           
-            // rb.useFullKinematicContacts = true; // 충돌 감지를 유지하면서 물리적 움직임을 멈춥니다
-            rb.linearVelocity = Vector2.zero; // 속도를 0으로 설정하여 움직임을 멈춥니다
-            //rb.angularVelocity = 0f; // 회전 속도를 0으로 설정하여 회전을 멈춥니다
-            // y position 고정
+
+            rb.linearVelocity = Vector2.zero;
             rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+            GetComponent<TrailRenderer>().enabled = false;
 
-            GetComponent<TrailRenderer>().enabled = false; // 트레일 렌더러 비활성화
+            //  벽 Normal 추출 (Raycast 방식)
+            // 쿠나이의 진행 방향 기준으로 짧게 Ray 쏴서 Normal 얻기
+            Vector2 dir = rb.linearVelocity.normalized;
+            if (dir == Vector2.zero) dir = transform.right; // 혹시 멈췄을 경우 대비
 
-
+            RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y) - dir * 0.1f, dir, 0.2f, LayerMask.GetMask("Wall"));
+            if (hit.collider != null)
+            {
+                hitNormal = hit.normal;
+            }
         }
-        // 아직 꽂히지 않았고, 부딪힌 대상이 "Enemy" 태그를 가지고 있다면
-        // collision.gameObject 대신 collision.transform을 사용합니다.
+
+        //  적에 꽂힌 경우
         if (!isStuck && collision.gameObject.CompareTag("Enemy"))
         {
             StickToEnemy(collision.transform);
         }
     }
-   
+
     private void StickToEnemy(Transform enemy)
     {
         isStuck = true;
 
-        // --- 물리 효과 제거 ---
-        // Rigidbody의 모든 물리 활동을 정지시킵니다.
-        // Destroy(rb) 대신 시뮬레이션을 끄는 것이 더 안전할 수 있습니다.
-        rb.bodyType = RigidbodyType2D.Kinematic; // 물리 엔진의 영향을 받지 않게 됨
-        rb.linearVelocity = Vector2.zero; // 혹시 모를 속도 제거
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.linearVelocity = Vector2.zero;
 
-        // Collider도 비활성화
-        //GetComponent<Collider2D>().enabled = false;
-
-        // --- 적에게 꽂히기 ---
         transform.parent = enemy;
 
-        //적 스크립트에 꽂혔다고 알려주기
         Enemy enemyScript = enemy.GetComponent<Enemy>();
         if (enemyScript != null)
         {
             enemyScript.SetStuckKunai(this);
         }
     }
+
     public bool IsStuck()
     {
         return isStuck;
+    }
+
+    public Vector2 GetHitNormal() // 플레이어가 가져다 쓰기 위한 함수
+    {
+        return hitNormal;
     }
 }

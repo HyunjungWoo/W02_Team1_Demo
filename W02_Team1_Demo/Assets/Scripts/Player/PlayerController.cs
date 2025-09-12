@@ -231,10 +231,46 @@ private void Start()
             rb.linearVelocity = Vector2.zero;
             rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
         }
+
+        // 벽 보정
+        warpPosition = CheckWallInner(warpPosition);
+
         Destroy(currentKunai.gameObject); // 워프 후 쿠나이는 파괴
         transform.position = warpPosition;
         currentKunai = null;
     }
+
+    /// <summary>
+    /// 워프하려는 위치가 벽 안쪽이라면, 쿠나이가 꽂힌 벽의 Normal 기준으로
+    /// 안전한 위치로 보정해서 돌려준다.
+    /// </summary>
+    private Vector3 CheckWallInner(Vector3 targetPos)
+    {
+        if (currentKunai != null)
+        {
+            Vector2 normal = currentKunai.GetHitNormal();
+
+            if (normal != Vector2.zero)
+            {
+                // 플레이어 콜라이더 크기만큼 바깥쪽으로 밀어냄
+                float offset = col.size.magnitude * 0.5f; // 캡슐 반경 정도
+                return targetPos + (Vector3)(normal * offset);
+            }
+        }
+
+        // Normal 정보가 없으면 기존 방식 fallback
+        Vector2 dir = (targetPos - transform.position).normalized;
+        float distance = Vector2.Distance(transform.position, targetPos);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir, distance, LayerMask.GetMask("Wall"));
+
+        if (hit.collider != null)
+        {
+            return hit.point - dir * 0.1f;
+        }
+
+        return targetPos;
+    }
+
 
     #endregion
 
