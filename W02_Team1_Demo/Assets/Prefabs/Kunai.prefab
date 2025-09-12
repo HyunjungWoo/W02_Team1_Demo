@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1135553791221399059}
   - component: {fileID: 1608398102032943277}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Circle
   m_TagString: Kunai
   m_Icon: {fileID: 0}
@@ -96,7 +96,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8430040606907175448}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: KunaiBodyBorder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4800084315735601721}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: KunaiTail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6298604516691997877}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: KunaiBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,8 +193,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6386301971663702323}
   - component: {fileID: 8577066864972699015}
-  - component: {fileID: 4851923239219969272}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Square
   m_TagString: Kunai
   m_Icon: {fileID: 0}
@@ -271,52 +270,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &4851923239219969272
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4779054734009729571}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
 --- !u!1 &4908619065443061163
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,7 +279,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8521769674114561621}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: KunaiHead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -359,7 +312,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1526370981110936377}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Border
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -396,7 +349,8 @@ GameObject:
   - component: {fileID: 4517955424766032627}
   - component: {fileID: 5651282726693479036}
   - component: {fileID: 2397542099538058605}
-  m_Layer: 11
+  - component: {fileID: -6039865742521574113}
+  m_Layer: 0
   m_Name: Kunai
   m_TagString: Kunai
   m_Icon: {fileID: 0}
@@ -587,6 +541,58 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!60 &-6039865742521574113
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4995944801069903025}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -0.28111982, y: 0.23970091}
+      - {x: -1.5808344, y: 0.17556366}
+      - {x: -1.5813503, y: -0.174824}
+      - {x: -0.26518857, y: -0.22053146}
+      - {x: 0.5894017, y: 0.0024135709}
+  m_UseDelaunayMesh: 0
 --- !u!1 &5012146628759128803
 GameObject:
   m_ObjectHideFlags: 0
@@ -597,7 +603,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2821615633609364986}
   - component: {fileID: 3278917776512848409}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: KunaiHead2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -684,7 +690,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5322716141106125851}
   - component: {fileID: 1635661199957350009}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: KunaiHead1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -771,7 +777,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9106977150065358715}
   - component: {fileID: 4183383228176215403}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -857,7 +863,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4303929206158710310}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: KunaiTailBorder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -890,7 +896,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8786023266863326827}
   - component: {fileID: 550449706335142709}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -977,8 +983,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7833973189102200582}
   - component: {fileID: 8104289618228096757}
-  - component: {fileID: 3696305965280810197}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: KunaiHead1
   m_TagString: Kunai
   m_Icon: {fileID: 0}
@@ -1055,56 +1060,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!60 &3696305965280810197
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8664523946883503334}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.28866667}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0, y: 0.5773587}
-      - {x: -0.5, y: -0.28866667}
-      - {x: 0.5, y: -0.28866667}
-  m_UseDelaunayMesh: 0
 --- !u!1 &8742174623166091131
 GameObject:
   m_ObjectHideFlags: 0
@@ -1115,8 +1070,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4842920718571091113}
   - component: {fileID: 8933902929710273906}
-  - component: {fileID: 1793517426797955104}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: KunaiHead2
   m_TagString: Kunai
   m_Icon: {fileID: 0}
@@ -1193,56 +1147,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!60 &1793517426797955104
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8742174623166091131}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.28866667}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0, y: 0.5773587}
-      - {x: -0.5, y: -0.28866667}
-      - {x: 0.5, y: -0.28866667}
-  m_UseDelaunayMesh: 0
 --- !u!1 &9032204300175994983
 GameObject:
   m_ObjectHideFlags: 0
@@ -1252,7 +1156,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3594325690053803029}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: KunaiHeadBorder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
