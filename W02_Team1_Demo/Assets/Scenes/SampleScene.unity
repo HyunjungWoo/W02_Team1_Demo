@@ -150,7 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAABIIezGOopwWQIAABEFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1z2jAQ/SuMzqVjPgqht9YQ0kMSJrSTiy9CWmMNsuTRR4Bk+O9dyTZ26PSEeO/t7tvVyh9EKFsBc9qsjeCPmgP5PiDhTL4MOvIBTnSv1Va8Q6t5FdwVQUSj5oU6oREfhTCrS3BGsB9qL4M4QdArkWtTrvgeUm2dRTin0gJSRrsQrRD6GJAT/gwXIeSMp/E8nN7xtEgGFzwyUA5MJ22FraxWecUkLSvgwXInnkzbtLVMYTONIhhnWkphGyfEnavYaUor67EPFHBBsbNYPugLEPvChXT94Oc8t+AaS4ael8LggOqs5Keup1ZSe6h9vVHpQ53ZNFqqcz7+Qw9Hkc6NLh/asqMklHCFYIcXembUut5U+/Dys2+vjlQe6E7CawHqSa+N9ooj6YwPod7CeNn9vXaWFsAOHV5bvQF99f+7CT1cYvOnVIpyF6iv0xrYSh3HHW8eDF7MLzQc98I2KRANLv5Y+E33/QVqiHthrEOq6VIFezvtTZCSVZxZ6Ma7VBsFEW5MV6CodOcNpnG3N3jD9creMPc0PJWmeMO1L+AmJMKdPkluqI0+Xi/LFvr4CLZ49k4KBZ3pQDzhnFKtVL1g/Zm0YVtvcsp6YXsv+OfVIovZ3bdJAgxG8xFls/HwbjrPeQLzyWjM5rPdgsTdEwr7pHJTG23Gg7emuuQK96z9ggzWhlZx2bmhx7V4L3Vv5ELlessMgHquM1yNg8Ei+Cj5igsc0BacEyreN/nIiNTsADy7Jspip6uTMzTrsmSkEm/aBSQjafxkZCTA113eGHgTcAzF22QXcvkLUEsDBBQAAAgIAABIIewuVYclbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM011FQSi9KLMgoBooYgjilmSkgdrSSpZmFqbFBanKqoblhYrKZka6FiXlaikGqubGhUbK5WZKlUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAABIIezGOopwWQIAABEFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAABIIewuVYclbQAAAHgAAAAJACQAAAAAAAAAAAAAAKYCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAXgMAAAAA
+    dataString: UEsDBBQAAAgIAABIIeyopYZfVQIAAA0FAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQF1VE1z2jAQ/SuMzqVjCIXQW0sI6SEJE9rJxRchrbEGWfJIcoBk+O/dlW3s0OkJ8d7b3bcf8MGU8SWIYN3KKfloJbDvA0Zv9mXQkQ9w5DtrNuodWs2rkiEnEY+aFx6URXxEYd4WEJwSP8xOkzhBsDIqs65Yyh0srA8e4YxrD0g5GyjaIPQxYEf8GM4p5ISv8Yxe7/iaJ4MzPgWYAK6TtsJWVqsqIzQvSpBkuRPfTNq0tcxgM42CjAurtfKNExZOZez0hZ+oT6k4dhVLkzYHtcsDpeoHPmeZh9DYcfx0pxwOp87Iftp6YgX3+9rTG9cV1ZhOop065+M/9HAU6czZ4qEtO0qoRMiV2KNBwX3oTbQP3332XZkD13u+1fCag3myK2crI5EMrqLQysP4rvt66WyRg9h3eG31CqzK/++FejjH5o8LrYotUV8nNbDRNo46bh0cLuUXGo434ZsUiJKLPx5+813/eBriXjkfkGq6NGRvaytHUraMM6NuqrCwzkCEG9MlGK7DaY1pwvUGr7he2SvmntPPpCnecO31X4VEuNMnyRW1tofLsnxuD4/g8+cqaGWgM03EE85pYY2pD6w/kzZsU7mMi17YrlLy82mx+fT2200CAkazERfT8fB2MstkArOb0VjMpts5i7enDPbJ9bo22owHt2a65AbvrP33GKwcL+OxS8cPK/Ve2N7IlcnsRjgA81xnuBgHh0XwBymXUuGANhCCMnHf7CNl2oo9yPSSKI2dLo/B8bTLkrJSvdlASMoW8e8iZQRfbnnt4E3BgYq3yc7s/BdQSwMEFAAACAgAAEgh7C5VhyVtAAAAeAAAAAkAJABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQGrVipLLSrOzM9TslIw0TPSMzTXUVBKL0osyCgGihiCOKWZKSB2tJKlmYWpsUFqcqqhuWFispmRroWJeVqKQaq5saFRsrlZkqVSLFB9SWVBql9ibipET0BiSUZaZl5KZl66nntRZoo7yGil2FoAUEsBAi0AFAAACAgAAEgh7Kilhl9VAgAADQUAAAsAJAAAAAAAAAAAAAAAAAAAAGdyYXBoMC5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsBAi0AFAAACAgAAEgh7C5VhyVtAAAAeAAAAAkAJAAAAAAAAAAAAAAAogIAAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLBQYAAAAAAgACALgAAABaAwAAAAA=
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -745,7 +745,7 @@ Transform:
   m_GameObject: {fileID: 674663559}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.01, y: 0.15, z: 0}
+  m_LocalPosition: {x: -10.01, y: 0.55, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1035,6 +1035,7 @@ MonoBehaviour:
   isMove: 0
   isAttack: 0
   isWait: 0
+  state: 0
 --- !u!114 &812404706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1051,7 +1052,7 @@ MonoBehaviour:
   requireLineOfSight: 1
   visionMask:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 0
   playerTag: Player
 --- !u!114 &812404707
 MonoBehaviour:
@@ -1245,6 +1246,7 @@ MonoBehaviour:
   isMove: 0
   isAttack: 0
   isWait: 0
+  state: 0
 --- !u!114 &820652266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1261,7 +1263,7 @@ MonoBehaviour:
   requireLineOfSight: 1
   visionMask:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 0
   playerTag: Player
 --- !u!114 &820652267
 MonoBehaviour:
@@ -1379,7 +1381,7 @@ Transform:
   m_GameObject: {fileID: 820652262}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.16, y: 1.17, z: 0}
+  m_LocalPosition: {x: -11.92, y: 1.15, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1395,16 +1397,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 820652262}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f196dfac134c3a4cbc414c8d7551d07, type: 3}
+  m_Script: {fileID: 11500000, guid: 749dca5bb54a9314ab5114f83673a999, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeedX: 100
-  accel: 30
-  force: 200
-  nextWaypointDistance: 2.5
-  repathInterval: 0.4
-  stopFriction: 0.2
-  useVelocityMode: 1
+  moveSpeed: 4
+  nextWaypointDistance: 1
+  pathUpdateInterval: 0.5
 --- !u!1 &1197720206
 GameObject:
   m_ObjectHideFlags: 0
