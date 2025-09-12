@@ -55,12 +55,15 @@ public class ScriptableStats : ScriptableObject
     public float JumpBuffer = .2f;
 
     [Header("DASH")]
-    public float DashPower = 50f; // 대시 속도
-    public float DashDuration = 0.2f; // 대시 지속 시간
-    public float DashCooldown = 1f; // 대시 쿨타임
+    public float DashPower      = 50f; // 대시 속도
+    public float DashDuration   = 0.2f; // 대시 지속 시간
+    public float DashCooldown   = 1f; // 대시 쿨타임
 
     [Header("WALLS")]
-    public float WallSlideSpeed = 5f; // 벽 미끄러지는 속도
-    public Vector2 WallJumpPower = new Vector2(20, 30); // 벽 점프 힘 (X, Y)
+    public LayerMask WallLayer; // 벽 레이어
+    public float WallSlideSpeed     = 2.7f; // 벽 미끄러지는 속도
+    public float WallStickDuration  = 0.25f; // 벽에 붙어있는 시간
+    public Vector2 WallJumpPower    = new Vector2(15, 20); // 벽 점프 힘 (X, Y)
+    public float WallCoyoteTime     = 0.1f;
 
 }

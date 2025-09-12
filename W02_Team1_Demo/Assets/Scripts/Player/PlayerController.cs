@@ -2,6 +2,7 @@ using System;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal.Internal;
 using UnityEngine.UIElements;
@@ -28,9 +29,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
     #endregion
 
     #region 벽타기 관련 변수
-    private bool onWall;
+    private bool onRightWall;
+    private bool onLeftWall;
     private bool isWallSliding;
-    private int  wallDirection;
+    private float wallStickTimer; // 벽에 붙어있는 시간을 계산하기 위한 타이머
+    private float frameLeftWall = float.MinValue; //  
     #endregion
 
     #region 점프하기 변수 
@@ -58,6 +61,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     #region 인터페이스 구현
     public Vector2 FrameInput => frameInput.Move;
+    private bool CanUseWallCoyote => !grounded && time <= frameLeftWall + stats.WallCoyoteTime;
     public event Action<bool, float> GroundedChanged;
     public event Action Jumped;
     #endregion
@@ -99,6 +103,7 @@ private void Start()
     {
         // Tarodev의 물리 기반 이동 처리 (수정 없음)
         CheckCollisions();
+        HandleWallSlide();
         HandleJump();
         HandleDash();
         HandleDirection();
@@ -106,6 +111,7 @@ private void Start()
         ApplyMovement();
     }
 
+   
 
     #region 입력 처리 (Input Handling)
 
@@ -283,6 +289,7 @@ private void Start()
     private void CheckCollisions()
     {
         Physics2D.queriesStartInColliders = false;
+        float facingDirection = transform.localScale.x; // 캐릭터가 바라보는 방향 (1 또는 -1)
 
         // 땅&천장 충돌 검사 
         bool groundHit = Physics2D.CapsuleCast(col.bounds.center, col.size, col.direction, 0, Vector2.down, stats.GrounderDistance, ~stats.PlayerLayer);
@@ -305,6 +312,10 @@ private void Start()
             GroundedChanged?.Invoke(false, 0);
         }
 
+        // 벽 충돌 검사
+        onRightWall = Physics2D.CapsuleCast(col.bounds.center, col.size, col.direction, 0, Vector2.right, 0.1f, stats.WallLayer);
+        // 왼쪽 벽 확인
+        onLeftWall = Physics2D.CapsuleCast(col.bounds.center, col.size, col.direction, 0, Vector2.left, 0.1f, stats.WallLayer);
         Physics2D.queriesStartInColliders = cachedQueryStartInColliders;
     }
 
@@ -313,6 +324,14 @@ private void Start()
 
     private void HandleJump()
     {
+        if(isDashing) return; // 대쉬 중에는 점프 불가
+
+        if(jumpToConsume && (isWallSliding || CanUseWallCoyote))
+        {
+            ExecuteWallJump();
+            return;
+        }
+
         if (!endedJumpEarly && !grounded && !frameInput.JumpHeld && rb.linearVelocity.y > 0) endedJumpEarly = true;
         if (!jumpToConsume && !HasBufferedJump) return;
         if (grounded || CanUseCoyote) ExecuteJump();
@@ -327,6 +346,26 @@ private void Start()
         coyoteUsable = false;
         frameVelocity.y = stats.JumpPower;
         Jumped?.Invoke();
+    }
+
+    private void ExecuteWallJump()
+    {
+        float wallDirection = onRightWall ? 1 : -1;
+
+        // 벽 점프 직후 상태 초기화
+        isWallSliding = false;
+        jumpToConsume = false;
+        endedJumpEarly = false;
+        frameLeftWall = float.MinValue;
+
+        // 힘 계산: 이제 wallDirection이 실제 벽의 위치이므로, 
+        // -wallDirection은 항상 벽의 반대 방향이 됨
+        Vector2 force = new Vector2(stats.WallJumpPower.x * -wallDirection, stats.WallJumpPower.y);
+        frameVelocity = force;
+
+        // 벽 점프 후에는 반대 방향을 보도록 캐릭터를 뒤집어 줌
+        transform.localScale = new Vector3(-wallDirection, 1, 1);
+
     }
 
     private void HandleDashCooldown()
@@ -367,6 +406,48 @@ private void Start()
             }
         }
     }
+
+    private void HandleWallSlide()
+    { 
+        var wasWallSliding = isWallSliding; // 변경 전 상태를 기록
+
+        if ((onRightWall || onLeftWall) && !grounded && frameVelocity.y < 0)
+        {
+            bool isPushingWall = (onRightWall && frameInput.Move.x > 0) || (onLeftWall && frameInput.Move.x < 0);
+
+            if (isPushingWall)
+            {
+                isWallSliding = true;
+                wallStickTimer = stats.WallStickDuration;
+            }
+            else
+            {
+                if (wallStickTimer > 0)
+                {
+                    wallStickTimer -= Time.fixedDeltaTime;
+                }
+                else
+                {
+                    isWallSliding = false;
+                }
+            }
+        }
+        else
+        {
+            isWallSliding = false;
+        }
+
+        if (wasWallSliding && !isWallSliding) // 벽 슬라이딩 상태가 true에서 false로 바뀌는 '순간' 시간을 기록
+        {
+            frameLeftWall = time;
+        }
+
+        if (isWallSliding) // 미끄러지는 효과 적용 
+        {
+            frameVelocity.y = -stats.WallSlideSpeed;
+        }
+    }
+
     // Horizontal
     private void HandleDirection()
     {
@@ -393,7 +474,7 @@ private void Start()
     // Gravity
     private void HandleGravity()
     {
-        if(isDashing) return;
+        if(isDashing || isWallSliding) return;
 
         if (grounded && frameVelocity.y <= 0f)
         {
