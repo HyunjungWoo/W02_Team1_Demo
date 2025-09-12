@@ -201,13 +201,38 @@ private void Start()
     private void WarpToKunai()
     {
         Vector3 warpPosition = currentKunai.transform.position;
+       
+
+        Transform enemyTransform = currentKunai.transform.parent;
+        if (enemyTransform != null && enemyTransform.CompareTag("Enemy"))
+        {
+            Debug.Log("쿠나이 적에게감");
+            // 3. 적의 스크립트를 가져와서 '갈라지며 죽는' 함수를 호출합니다! 💥
+            Enemy enemy = enemyTransform.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.DieAndSlice();
+            }
+            // 이 시점에서 원본 적과 쿠나이는 파괴됩니다.
+            // 4. 자신의 Rigidbody에 위쪽으로 힘을 가해 반동 효과를 줍니다.
+            if (rb != null)
+            {
+                // 기존 속도를 0으로 초기화하여 힘이 더 깔끔하게 들어가도록 합니다.
+                rb.linearVelocity = Vector2.zero;
+                // 위쪽으로 튀어 오르는 힘을 줍니다.
+                rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.left * selfForce, ForceMode2D.Impulse);
+            }
+
+        }
+        // 반동 효과
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
+        }
         Destroy(currentKunai.gameObject); // 워프 후 쿠나이는 파괴
         transform.position = warpPosition;
-
-        // 반동 효과
-        rb.linearVelocity = Vector2.zero;
-        rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
-
         currentKunai = null;
     }
 
