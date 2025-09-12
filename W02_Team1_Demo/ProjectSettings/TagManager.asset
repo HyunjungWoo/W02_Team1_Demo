@@ -6,6 +6,7 @@ TagManager:
   tags:
   - wall
   - Enemy
+  - Kunai
   layers:
   - Default
   - TransparentFX
@@ -17,8 +18,8 @@ TagManager:
   - Player
   - PlayerProjectile
   - Enemy
-  - 
-  - 
+  - BackGround
+  - Kunai
   - 
   - 
   - 

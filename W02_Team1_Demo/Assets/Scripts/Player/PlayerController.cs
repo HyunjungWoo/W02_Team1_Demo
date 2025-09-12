@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
@@ -8,7 +9,7 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))] // 연결하지 않아도 자동으로 연결
 public class PlayerController : MonoBehaviour, IPlayerController
 {
-    #region Tarodev 이동 관련 변수
+    #region 이동 관련 변수
     // 중요: 이 변수는 반드시 Inspector에서 할당해주어야 합니다!
     [SerializeField] private ScriptableStats _stats;
     private Rigidbody2D _rb;
@@ -17,6 +18,28 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private Vector2 _frameVelocity;
     private bool _cachedQueryStartInColliders;
     private float _time;
+    #endregion
+
+    #region 대시 관련 변수
+    private bool    _isDashing;
+    private float   _dashTimeLeft;
+    private float   _dashCooldownTimer;
+
+    #endregion
+
+    #region 벽타기 관련 변수
+    private bool _onWall;
+    private bool _isWallSliding;
+    private int  _wallDirection;
+    #endregion
+
+    #region 점프하기 변수 
+    // Jumping
+    private bool _jumpToConsume;
+    private bool _bufferedJumpUsable;
+    private bool _endedJumpEarly;
+    private bool _coyoteUsable;
+    private float _timeJumpWasPressed;
     #endregion
 
     #region 쿠나이 관련 변수
@@ -45,9 +68,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<CapsuleCollider2D>();
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
+
     }
 
-    private void Start()
+private void Start()
     {
         // 직접 만드신 Start() 내용: 카메라 및 조준선 초기화
         mainCamera = Camera.main;
@@ -66,9 +90,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Tarodev의 시간 추적 및 입력 수집
         _time += Time.deltaTime;
         GatherInput();
-
-        // 직접 만드신 쿠나이 조준 및 워프 로직
         HandleKunaiActions();
+        // 대쉬 쿨타임 처리
+        HandleDashCooldown();
     }
 
     private void FixedUpdate()
@@ -76,10 +100,12 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Tarodev의 물리 기반 이동 처리 (수정 없음)
         CheckCollisions();
         HandleJump();
+        HandleDash();
         HandleDirection();
         HandleGravity();
         ApplyMovement();
     }
+
 
     #region 입력 처리 (Input Handling)
 
@@ -90,6 +116,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
             JumpHeld = Input.GetButton("Jump") || Input.GetKey(KeyCode.C),
+            DashDown = Input.GetButton("Fire3") || Input.GetKeyDown(KeyCode.X),
             Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
         };
 
@@ -104,6 +131,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             _jumpToConsume = true;
             _timeJumpWasPressed = _time;
         }
+
     }
 
     private void HandleKunaiActions()
@@ -134,10 +162,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             if (currentKunai != null && currentKunai.IsStuck())
             {
+                // 대쉬 쿨타임 초기화
+                _dashCooldownTimer = 0;
                 WarpToKunai();
             }
         }
     }
+
 
     #endregion
 
@@ -182,7 +213,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     #endregion
 
-    #region Tarodev 이동 로직 (수정 없음)
+    #region Tarodev 이동 로직 
 
     // Collisions
     private float _frameLeftGrounded = float.MinValue;
@@ -192,6 +223,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     {
         Physics2D.queriesStartInColliders = false;
 
+        // 땅&천장 충돌 검사 
         bool groundHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down, _stats.GrounderDistance, ~_stats.PlayerLayer);
         bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up, _stats.GrounderDistance, ~_stats.PlayerLayer);
 
@@ -215,13 +247,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
         Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
     }
 
-    // Jumping
-    private bool _jumpToConsume;
-    private bool _bufferedJumpUsable;
-    private bool _endedJumpEarly;
-    private bool _coyoteUsable;
-    private float _timeJumpWasPressed;
-
     private bool HasBufferedJump => _bufferedJumpUsable && _time < _timeJumpWasPressed + _stats.JumpBuffer;
     private bool CanUseCoyote => _coyoteUsable && !_grounded && _time < _frameLeftGrounded + _stats.CoyoteTime;
 
@@ -243,9 +268,56 @@ public class PlayerController : MonoBehaviour, IPlayerController
         Jumped?.Invoke();
     }
 
+    private void HandleDashCooldown()
+    {
+        if (_dashCooldownTimer > 0)
+        {
+            _dashCooldownTimer -= Time.deltaTime;
+        }
+    }
+
+    private void HandleDash()
+    {
+        // 대쉬 시작 조건 확인
+        if (_frameInput.DashDown && _dashCooldownTimer <= 0 && !_isDashing)
+        {
+            Vector2 dashDirection = _frameInput.Move;
+            if (dashDirection == Vector2.zero)
+            {
+                dashDirection = new Vector2(transform.localScale.x, 0); // 기본적으로 캐릭터가 바라보는 방향으로 대시
+
+            }
+
+            _isDashing = true;
+            _dashTimeLeft = _stats.DashDuration;
+            _frameVelocity = dashDirection.normalized * _stats.DashPower; // 대시 속도 설정
+            _dashCooldownTimer = _stats.DashCooldown; // 쿨타임 초기화
+        }
+
+        if(_isDashing)
+        {
+            _dashTimeLeft -= Time.fixedDeltaTime;
+
+            if (_dashTimeLeft <= 0)
+            {
+                _isDashing = false;
+                _frameVelocity = Vector2.zero;
+
+            }
+        }
+    }
     // Horizontal
     private void HandleDirection()
     {
+        if (_frameInput.Move.x != 0)
+        {
+            // Mathf.Sign() 함수는 입력값이 양수면 1, 음수면 -1을 반환합니다.
+            // 이를 이용하여 캐릭터의 localScale.x 값을 1 또는 -1로 만들어 방향을 뒤집습니다.
+            transform.localScale = new Vector3(Mathf.Sign(_frameInput.Move.x), 1, 1);
+        }
+        // -----------------------------------------
+
+        // 기존 이동 로직 (수정 없음)
         if (_frameInput.Move.x == 0)
         {
             var deceleration = _grounded ? _stats.GroundDeceleration : _stats.AirDeceleration;
@@ -260,6 +332,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     // Gravity
     private void HandleGravity()
     {
+        if(_isDashing) return;
+
         if (_grounded && _frameVelocity.y <= 0f)
         {
             _frameVelocity.y = _stats.GroundingForce;
@@ -282,6 +356,7 @@ public struct FrameInput
 {
     public bool JumpDown;
     public bool JumpHeld;
+    public bool DashDown;
     public Vector2 Move;
 }
 
