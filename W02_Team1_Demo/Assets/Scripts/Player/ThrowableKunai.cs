@@ -19,7 +19,13 @@ public class ThrowableKunai : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        // --- 스프라이트 방향 회전 ---
+        // 멈춰있지 않고, 속도가 충분히 클 때만 방향 갱신
+        if (!isStuck && rb.linearVelocity.sqrMagnitude > 0.01f)
+        {
+            float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -11,35 +11,35 @@ public class PlayerController : MonoBehaviour, IPlayerController
 {
     #region 이동 관련 변수
     // 중요: 이 변수는 반드시 Inspector에서 할당해주어야 합니다!
-    [SerializeField] private ScriptableStats _stats;
-    private Rigidbody2D _rb;
-    private CapsuleCollider2D _col;
-    private FrameInput _frameInput;
-    private Vector2 _frameVelocity;
-    private bool _cachedQueryStartInColliders;
-    private float _time;
+    [SerializeField] private ScriptableStats stats;
+    private Rigidbody2D rb;
+    private CapsuleCollider2D col;
+    private FrameInput frameInput;
+    private Vector2  frameVelocity;
+    private bool  cachedQueryStartInColliders;
+    private float  time;
     #endregion
 
     #region 대시 관련 변수
-    private bool    _isDashing;
-    private float   _dashTimeLeft;
-    private float   _dashCooldownTimer;
+    private bool    isDashing;
+    private float   dashTimeLeft;
+    private float   dashCooldownTimer;
 
     #endregion
 
     #region 벽타기 관련 변수
-    private bool _onWall;
-    private bool _isWallSliding;
-    private int  _wallDirection;
+    private bool onWall;
+    private bool isWallSliding;
+    private int  wallDirection;
     #endregion
 
     #region 점프하기 변수 
     // Jumping
-    private bool _jumpToConsume;
-    private bool _bufferedJumpUsable;
-    private bool _endedJumpEarly;
-    private bool _coyoteUsable;
-    private float _timeJumpWasPressed;
+    private bool jumpToConsume;
+    private bool bufferedJumpUsable;
+    private bool endedJumpEarly;
+    private bool coyoteUsable;
+    private float timeJumpWasPressed;
     #endregion
 
     #region 쿠나이 관련 변수
@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     #endregion
 
     #region 인터페이스 구현
-    public Vector2 FrameInput => _frameInput.Move;
+    public Vector2 FrameInput => frameInput.Move;
     public event Action<bool, float> GroundedChanged;
     public event Action Jumped;
     #endregion
@@ -65,9 +65,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private void Awake()
     {
         // Tarodev의 Awake() 내용: 필수 컴포넌트 초기화
-        _rb = GetComponent<Rigidbody2D>();
-        _col = GetComponent<CapsuleCollider2D>();
-        _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
+        rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<CapsuleCollider2D>();
+        cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
 
     }
 
@@ -88,7 +88,7 @@ private void Start()
     private void Update()
     {
         // Tarodev의 시간 추적 및 입력 수집
-        _time += Time.deltaTime;
+        time += Time.deltaTime;
         GatherInput();
         HandleKunaiActions();
         // 대쉬 쿨타임 처리
@@ -112,7 +112,7 @@ private void Start()
     private void GatherInput()
     {
         // Tarodev의 이동 및 점프 입력 처리
-        _frameInput = new FrameInput
+        frameInput = new FrameInput
         {
             JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
             JumpHeld = Input.GetButton("Jump") || Input.GetKey(KeyCode.C),
@@ -120,16 +120,16 @@ private void Start()
             Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
         };
 
-        if (_stats.SnapInput)
+        if (stats.SnapInput)
         {
-            _frameInput.Move.x = Mathf.Abs(_frameInput.Move.x) < _stats.HorizontalDeadZoneThreshold ? 0 : Mathf.Sign(_frameInput.Move.x);
-            _frameInput.Move.y = Mathf.Abs(_frameInput.Move.y) < _stats.VerticalDeadZoneThreshold ? 0 : Mathf.Sign(_frameInput.Move.y);
+            frameInput.Move.x = Mathf.Abs(frameInput.Move.x) < stats.HorizontalDeadZoneThreshold ? 0 : Mathf.Sign(frameInput.Move.x);
+            frameInput.Move.y = Mathf.Abs(frameInput.Move.y) < stats.VerticalDeadZoneThreshold ? 0 : Mathf.Sign(frameInput.Move.y);
         }
 
-        if (_frameInput.JumpDown)
+        if (frameInput.JumpDown)
         {
-            _jumpToConsume = true;
-            _timeJumpWasPressed = _time;
+            jumpToConsume = true;
+            timeJumpWasPressed = time;
         }
 
     }
@@ -163,7 +163,7 @@ private void Start()
             if (currentKunai != null && currentKunai.IsStuck())
             {
                 // 대쉬 쿨타임 초기화
-                _dashCooldownTimer = 0;
+                dashCooldownTimer = 0;
                 WarpToKunai();
             }
         }
@@ -201,13 +201,38 @@ private void Start()
     private void WarpToKunai()
     {
         Vector3 warpPosition = currentKunai.transform.position;
+       
+
+        Transform enemyTransform = currentKunai.transform.parent;
+        if (enemyTransform != null && enemyTransform.CompareTag("Enemy"))
+        {
+            Debug.Log("쿠나이 적에게감");
+            // 3. 적의 스크립트를 가져와서 '갈라지며 죽는' 함수를 호출합니다! 💥
+            Enemy enemy = enemyTransform.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.DieAndSlice();
+            }
+            // 이 시점에서 원본 적과 쿠나이는 파괴됩니다.
+            // 4. 자신의 Rigidbody에 위쪽으로 힘을 가해 반동 효과를 줍니다.
+            if (rb != null)
+            {
+                // 기존 속도를 0으로 초기화하여 힘이 더 깔끔하게 들어가도록 합니다.
+                rb.linearVelocity = Vector2.zero;
+                // 위쪽으로 튀어 오르는 힘을 줍니다.
+                rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.left * selfForce, ForceMode2D.Impulse);
+            }
+
+        }
+        // 반동 효과
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
+        }
         Destroy(currentKunai.gameObject); // 워프 후 쿠나이는 파괴
         transform.position = warpPosition;
-
-        // 반동 효과
-        _rb.linearVelocity = Vector2.zero;
-        _rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
-
         currentKunai = null;
     }
 
@@ -216,92 +241,92 @@ private void Start()
     #region Tarodev 이동 로직 
 
     // Collisions
-    private float _frameLeftGrounded = float.MinValue;
-    private bool _grounded;
+    private float frameLeftGrounded = float.MinValue;
+    private bool grounded;
 
     private void CheckCollisions()
     {
         Physics2D.queriesStartInColliders = false;
 
         // 땅&천장 충돌 검사 
-        bool groundHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.down, _stats.GrounderDistance, ~_stats.PlayerLayer);
-        bool ceilingHit = Physics2D.CapsuleCast(_col.bounds.center, _col.size, _col.direction, 0, Vector2.up, _stats.GrounderDistance, ~_stats.PlayerLayer);
+        bool groundHit = Physics2D.CapsuleCast(col.bounds.center, col.size, col.direction, 0, Vector2.down, stats.GrounderDistance, ~stats.PlayerLayer);
+        bool ceilingHit = Physics2D.CapsuleCast(col.bounds.center, col.size, col.direction, 0, Vector2.up, stats.GrounderDistance, ~stats.PlayerLayer);
 
-        if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
+        if (ceilingHit) frameVelocity.y = Mathf.Min(0, frameVelocity.y);
 
-        if (!_grounded && groundHit)
+        if (!grounded && groundHit)
         {
-            _grounded = true;
-            _coyoteUsable = true;
-            _bufferedJumpUsable = true;
-            _endedJumpEarly = false;
-            GroundedChanged?.Invoke(true, Mathf.Abs(_frameVelocity.y));
+            grounded = true;
+            coyoteUsable = true;
+            bufferedJumpUsable = true;
+            endedJumpEarly = false;
+            GroundedChanged?.Invoke(true, Mathf.Abs(frameVelocity.y));
         }
-        else if (_grounded && !groundHit)
+        else if (grounded && !groundHit)
         {
-            _grounded = false;
-            _frameLeftGrounded = _time;
+            grounded = false;
+            frameLeftGrounded = time;
             GroundedChanged?.Invoke(false, 0);
         }
 
-        Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
+        Physics2D.queriesStartInColliders = cachedQueryStartInColliders;
     }
 
-    private bool HasBufferedJump => _bufferedJumpUsable && _time < _timeJumpWasPressed + _stats.JumpBuffer;
-    private bool CanUseCoyote => _coyoteUsable && !_grounded && _time < _frameLeftGrounded + _stats.CoyoteTime;
+    private bool HasBufferedJump => bufferedJumpUsable && time < timeJumpWasPressed + stats.JumpBuffer;
+    private bool CanUseCoyote => coyoteUsable && !grounded && time < frameLeftGrounded + stats.CoyoteTime;
 
     private void HandleJump()
     {
-        if (!_endedJumpEarly && !_grounded && !_frameInput.JumpHeld && _rb.linearVelocity.y > 0) _endedJumpEarly = true;
-        if (!_jumpToConsume && !HasBufferedJump) return;
-        if (_grounded || CanUseCoyote) ExecuteJump();
-        _jumpToConsume = false;
+        if (!endedJumpEarly && !grounded && !frameInput.JumpHeld && rb.linearVelocity.y > 0) endedJumpEarly = true;
+        if (!jumpToConsume && !HasBufferedJump) return;
+        if (grounded || CanUseCoyote) ExecuteJump();
+        jumpToConsume = false;
     }
 
     private void ExecuteJump()
     {
-        _endedJumpEarly = false;
-        _timeJumpWasPressed = 0;
-        _bufferedJumpUsable = false;
-        _coyoteUsable = false;
-        _frameVelocity.y = _stats.JumpPower;
+        endedJumpEarly = false;
+        timeJumpWasPressed = 0;
+        bufferedJumpUsable = false;
+        coyoteUsable = false;
+        frameVelocity.y = stats.JumpPower;
         Jumped?.Invoke();
     }
 
     private void HandleDashCooldown()
     {
-        if (_dashCooldownTimer > 0)
+        if (dashCooldownTimer > 0)
         {
-            _dashCooldownTimer -= Time.deltaTime;
+            dashCooldownTimer -= Time.deltaTime;
         }
     }
 
     private void HandleDash()
     {
         // 대쉬 시작 조건 확인
-        if (_frameInput.DashDown && _dashCooldownTimer <= 0 && !_isDashing)
+        if (frameInput.DashDown && dashCooldownTimer <= 0 && !isDashing)
         {
-            Vector2 dashDirection = _frameInput.Move;
+            Vector2 dashDirection = frameInput.Move;
             if (dashDirection == Vector2.zero)
             {
                 dashDirection = new Vector2(transform.localScale.x, 0); // 기본적으로 캐릭터가 바라보는 방향으로 대시
 
             }
 
-            _isDashing = true;
-            _dashTimeLeft = _stats.DashDuration;
-            _frameVelocity = dashDirection.normalized * _stats.DashPower; // 대시 속도 설정
-            _dashCooldownTimer = _stats.DashCooldown; // 쿨타임 초기화
+            isDashing = true;
+            dashTimeLeft = stats.DashDuration;
+            frameVelocity = dashDirection.normalized * stats.DashPower; // 대시 속도 설정
+            dashCooldownTimer = stats.DashCooldown; // 쿨타임 초기화
         }
 
-        if(_isDashing)
+        if(isDashing)
         {
-            _dashTimeLeft -= Time.fixedDeltaTime;
+            dashTimeLeft -= Time.fixedDeltaTime;
 
-            if (_dashTimeLeft <= 0)
+            if (dashTimeLeft <= 0)
             {
-                _isDashing = false;
-                _frameVelocity = Vector2.zero;
+                isDashing = false;
+                frameVelocity = Vector2.zero;
 
             }
         }
@@ -309,44 +334,44 @@ private void Start()
     // Horizontal
     private void HandleDirection()
     {
-        if (_frameInput.Move.x != 0)
+        if (frameInput.Move.x != 0)
         {
             // Mathf.Sign() 함수는 입력값이 양수면 1, 음수면 -1을 반환합니다.
             // 이를 이용하여 캐릭터의 localScale.x 값을 1 또는 -1로 만들어 방향을 뒤집습니다.
-            transform.localScale = new Vector3(Mathf.Sign(_frameInput.Move.x), 1, 1);
+            transform.localScale = new Vector3(Mathf.Sign(frameInput.Move.x), 1, 1);
         }
         // -----------------------------------------
 
         // 기존 이동 로직 (수정 없음)
-        if (_frameInput.Move.x == 0)
+        if (frameInput.Move.x == 0)
         {
-            var deceleration = _grounded ? _stats.GroundDeceleration : _stats.AirDeceleration;
-            _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, 0, deceleration * Time.fixedDeltaTime);
+            var deceleration = grounded ? stats.GroundDeceleration : stats.AirDeceleration;
+            frameVelocity.x = Mathf.MoveTowards(frameVelocity.x, 0, deceleration * Time.fixedDeltaTime);
         }
         else
         {
-            _frameVelocity.x = Mathf.MoveTowards(_frameVelocity.x, _frameInput.Move.x * _stats.MaxSpeed, _stats.Acceleration * Time.fixedDeltaTime);
+            frameVelocity.x = Mathf.MoveTowards(frameVelocity.x, frameInput.Move.x * stats.MaxSpeed, stats.Acceleration * Time.fixedDeltaTime);
         }
     }
 
     // Gravity
     private void HandleGravity()
     {
-        if(_isDashing) return;
+        if(isDashing) return;
 
-        if (_grounded && _frameVelocity.y <= 0f)
+        if (grounded && frameVelocity.y <= 0f)
         {
-            _frameVelocity.y = _stats.GroundingForce;
+            frameVelocity.y = stats.GroundingForce;
         }
         else
         {
-            var inAirGravity = _stats.FallAcceleration;
-            if (_endedJumpEarly && _frameVelocity.y > 0) inAirGravity *= _stats.JumpEndEarlyGravityModifier;
-            _frameVelocity.y = Mathf.MoveTowards(_frameVelocity.y, -_stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
+            var inAirGravity = stats.FallAcceleration;
+            if (endedJumpEarly && frameVelocity.y > 0) inAirGravity *= stats.JumpEndEarlyGravityModifier;
+            frameVelocity.y = Mathf.MoveTowards(frameVelocity.y, -stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
         }
     }
 
-    private void ApplyMovement() => _rb.linearVelocity = _frameVelocity;
+    private void ApplyMovement() => rb.linearVelocity = frameVelocity;
 
     #endregion
 }
