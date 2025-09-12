@@ -53,4 +53,15 @@ public class ScriptableStats : ScriptableObject
 
     [Tooltip("The amount of time we buffer a jump. This allows jump input before actually hitting the ground")]
     public float JumpBuffer = .2f;
+
+    [Header("DASH")]
+    public float DashPower = 50f; // 대시 속도
+    public float DashDuration = 0.2f; // 대시 지속 시간
+    public float DashCooldown = 1f; // 대시 쿨타임
+    public int MaxDashes = 1; // 최대 대시 횟수
+
+    [Header("WALLS")]
+    public float WallSlideSpeed = 5f; // 벽 미끄러지는 속도
+    public Vector2 WallJumpPower = new Vector2(20, 30); // 벽 점프 힘 (X, Y)
+
 }
