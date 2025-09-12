@@ -3,7 +3,7 @@ using System.Collections; // 코루틴 사용을 위해 추가
 
 public class HitboxController : MonoBehaviour
 {
-    [SerializeField] private GameObject weapon;
+    [SerializeField] private GameObject player;
     private float knockbackForce = 10f;
 
     [Header("슬로우 모션 효과")]
@@ -41,7 +41,7 @@ public class HitboxController : MonoBehaviour
         Rigidbody2D enemyRigidbody = enemyCollider.GetComponent<Rigidbody2D>();
         if (enemyRigidbody != null)
         {
-            Vector2 direction = (enemyCollider.transform.position - weapon.transform.position).normalized;
+            Vector2 direction = (enemyCollider.transform.position - player.transform.position).normalized;
             direction.y += 0.1f;
             Vector2 knockbackDirection = (direction + Vector2.up).normalized;
             enemyRigidbody.AddForce(knockbackDirection * knockbackForce, ForceMode2D.Impulse);

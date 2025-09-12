@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     public float thorwForce = 30f; // 던지는 힘
     public LineRenderer aimLine; // 조준선을 그리기 위한 LineRenderer
     [Header("반동 설정")]
-    [SerializeField] private float selfForce = 1f; // 자신에게 가할 힘
+    [SerializeField] private float selfForce = 2f; // 자신에게 가할 힘
     private Rigidbody2D rb; // 자신의 Rigidbody2D를 담을 변수
     // 내부 변수
     private ThrowableKunai currentKunai; // 현재 던져진 칼날
@@ -111,6 +111,8 @@ public class PlayerController : MonoBehaviour
     }
     private void WarpToKunai()
     {
+        // 추가: 순간이동 전 플레이어의 위치를 저장합니다.
+        Vector2 playerPosBeforeWarp = transform.position;
         // 1. 텔레포트할 위치를 미리 저장합니다.
         Vector3 warpPosition = currentKunai.transform.position;
         Debug.Log("텔포");
@@ -132,9 +134,15 @@ public class PlayerController : MonoBehaviour
             {
                 // 기존 속도를 0으로 초기화하여 힘이 더 깔끔하게 들어가도록 합니다.
                 rb.linearVelocity = Vector2.zero;
-                // 위쪽으로 튀어 오르는 힘을 줍니다.
-                rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
-                rb.AddForce(Vector2.left * selfForce, ForceMode2D.Impulse);
+                // '원래 내 위치'에서 '적이 있던 위치'를 빼서 반대 방향을 계산합니다.
+                Vector2 knockbackDirection = (playerPosBeforeWarp - (Vector2)warpPosition).normalized;
+
+                // 만약 방향 벡터가 0이라면 (제자리에서 텔레포트한 경우) 위쪽으로 살짝 튕겨줍니다.
+               
+                knockbackDirection = Vector2.up;
+
+                // 계산된 '적 반대 방향'으로 힘을 가합니다.
+                rb.AddForce(knockbackDirection * selfForce, ForceMode2D.Impulse);
             }
 
         }
