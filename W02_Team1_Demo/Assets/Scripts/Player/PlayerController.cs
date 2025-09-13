@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [Header("슬로우 모션 효과")]
     private float slowdownFactor = 0.3f; // 얼마나 느려지게 할지 (0.05 = 5%)
     private float slowdownLength = 1f;   // 슬로우 모션 지속 시간 (초)
+    Coroutine slowMotionCoroutine;
 
     #endregion
 
@@ -431,8 +432,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     public void StartSlowMotionEffect()
     {
-        // 코루틴을 사용하여 시간의 흐름에 따라 효과를 적용하고 해제합니다.
-        StartCoroutine(SlowMotionCoroutine());
+        // 기존 코루틴이 돌고 있다면 중단
+        if (slowMotionCoroutine != null)
+        {
+            StopCoroutine(slowMotionCoroutine);
+        }
+
+        // 새로운 코루틴 시작
+        slowMotionCoroutine = StartCoroutine(SlowMotionCoroutine());
     }
 
     private IEnumerator SlowMotionCoroutine()
