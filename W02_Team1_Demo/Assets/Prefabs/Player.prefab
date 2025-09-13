@@ -290,9 +290,17 @@ MonoBehaviour:
   selfForce: 2
   superHeroLandingCheckBox: {fileID: 80109342349426505}
   warpLinePrefab: {fileID: 7989061622465660761, guid: 70b687725ea6260458e35b6b954a337e, type: 3}
+  kunaiLinePrefab: {fileID: 7989061622465660761, guid: 16c4f7e6e1990b94888117820baeec4c, type: 3}
   flashDuration: 0.4
-  lineRenderer: {fileID: 8576132153245120533}
   maxReflections: 30
+  lineFrames:
+  - {fileID: 2800000, guid: eaff66992fa8a734bbd702286db0b938, type: 3}
+  - {fileID: 2800000, guid: 5fdf97f8b3566564b8d5276015b17c63, type: 3}
+  - {fileID: 2800000, guid: 9bfc268c99faa594d89e6cf5f931bf65, type: 3}
+  - {fileID: 2800000, guid: da4ecbccd8d7b434b9ebe8a9964a0b9c, type: 3}
+  - {fileID: 2800000, guid: 845ee75448a941e41b8a072b3f692d3a, type: 3}
+  - {fileID: 2800000, guid: ba5183a309381e24b8876bd816b41a69, type: 3}
+  frameInterval: 0.1
 --- !u!50 &6861478885976935308
 Rigidbody2D:
   serializedVersion: 5

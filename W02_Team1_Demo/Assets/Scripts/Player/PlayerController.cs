@@ -65,9 +65,12 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     [Header("이펙트 관련 설정")]
     [SerializeField] GameObject warpLinePrefab;
+    [SerializeField] GameObject kunaiLinePrefab;
     [SerializeField] float flashDuration = 0.4f;
     
     [SerializeField] private int maxReflections = 30;
+    [SerializeField] private Texture2D[] lineFrames;   // 프레임 이미지 넣기
+    [SerializeField] private float frameInterval = 0.1f; // 프레임 교체 간격
     // 궤적 포인트 기록용
     private List<Vector3> linePoints = new List<Vector3>();
 
@@ -261,9 +264,12 @@ public class PlayerController : MonoBehaviour, IPlayerController
             {
                 Debug.Log($"Raycast: NoneStuck 맞음 → 레이캐스트 중단 ({hit.collider.gameObject.name})");
                 return;
+            }else if (hit.collider.CompareTag("LockPlatform"))
+            {
+                Debug.Log($"Raycast: 잠긴 플랫폼 맞음 → 레이캐스트 중단 ({hit.collider.gameObject.name})");
+                return;
             }
-
-            if (hit.collider.CompareTag("ReflectionPlatform"))
+            else if (hit.collider.CompareTag("ReflectionPlatform"))
             {
                 ReflectionPlatform reflection = hit.collider.GetComponent<ReflectionPlatform>();
                 Vector2 normal = reflection.GetSurfaceNormal();
@@ -273,10 +279,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
                 // 재귀 반사
                 CastKunaiRay(hit.point + reflectedDir * 0.01f, reflectedDir, reflectionsLeft - 1);
-            } else if (hit.collider.CompareTag("LockPlatform"))
-            {
-                Debug.Log($"Raycast: 잠긴 플랫폼 맞음 → 레이캐스트 중단 ({hit.collider.gameObject.name})");
-                return;
             }
             else
             {
@@ -299,12 +301,33 @@ public class PlayerController : MonoBehaviour, IPlayerController
     }
 
 
+    //private void FinalizeLine()
+    //{
+    //    if (linePoints.Count < 2) return;
+
+    //    // 라인 오브젝트 생성
+    //    GameObject lineObj = Instantiate(warpLinePrefab);
+    //    LineRenderer newLine = lineObj.GetComponent<LineRenderer>();
+
+    //    // 포인트 복사
+    //    newLine.positionCount = linePoints.Count;
+    //    for (int i = 0; i < linePoints.Count; i++)
+    //    {
+    //        newLine.SetPosition(i, linePoints[i]);
+    //    }
+
+    //    // 서서히 사라지게
+    //    StartCoroutine(FadeAndDestroy(lineObj, flashDuration));
+    //}
+
+    
+
     private void FinalizeLine()
     {
         if (linePoints.Count < 2) return;
 
         // 라인 오브젝트 생성
-        GameObject lineObj = Instantiate(warpLinePrefab);
+        GameObject lineObj = Instantiate(kunaiLinePrefab);
         LineRenderer newLine = lineObj.GetComponent<LineRenderer>();
 
         // 포인트 복사
@@ -314,9 +337,44 @@ public class PlayerController : MonoBehaviour, IPlayerController
             newLine.SetPosition(i, linePoints[i]);
         }
 
-        // 서서히 사라지게
-        StartCoroutine(FadeAndDestroy(lineObj, flashDuration));
+        // 프레임 애니메이션 + 페이드 아웃 실행
+        StartCoroutine(AnimateAndFade(lineObj, flashDuration));
     }
+
+    private IEnumerator AnimateAndFade(GameObject lineObj, float duration)
+    {
+        LineRenderer line = lineObj.GetComponent<LineRenderer>();
+        Material mat = line.material; // 라인에 적용된 머티리얼
+        float elapsed = 0f;
+        Color startColor = line.startColor;
+
+        int frameIndex = 0;
+        float frameTimer = 0f;
+
+        while (elapsed < duration)
+        {
+            // --- 1. 알파 페이드 ---
+            float t = elapsed / duration;
+            Color c = new Color(startColor.r, startColor.g, startColor.b, 1 - t);
+            line.startColor = c;
+            line.endColor = c;
+
+            // --- 2. 프레임 애니메이션 ---
+            frameTimer += Time.deltaTime;
+            if (frameTimer >= frameInterval)
+            {
+                frameIndex = (frameIndex + 1) % lineFrames.Length;
+                mat.mainTexture = lineFrames[frameIndex];
+                frameTimer = 0f;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        Destroy(lineObj);
+    }
+
 
 
 
