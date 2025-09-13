@@ -57,6 +57,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private ThrowableKunai currentKunai;
     private Camera mainCamera;
     private bool isAiming = false;
+
+    [Header("슈퍼히어로 랜딩 설정")]
+    [SerializeField] private GameObject superHeroLandingCheckBox;
     #endregion
 
     #region 인터페이스 구현
@@ -86,6 +89,11 @@ private void Start()
         else
         {
             Debug.LogError("Aim Line Renderer is not assigned.");
+        }
+        // 게임 시작 시, 연결된 오브젝트가 있는지 확인합니다.
+        if (superHeroLandingCheckBox == null)
+        {
+            Debug.LogError("superHeroLandingCheckBox가 연결되지 않았습니다!");
         }
     }
 
@@ -233,6 +241,9 @@ private void Start()
         }
         else
         {
+            HitboxController.Instance.isActive = true;
+            Invoke("DeactivateObject", 0.1f);   // 적 날리는 박스 해제.
+
             // 벽 보정
             warpPosition = CheckWallInner(warpPosition);
         }
@@ -243,11 +254,16 @@ private void Start()
             rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
         }
 
-        
 
         Destroy(currentKunai.gameObject); // 워프 후 쿠나이는 파괴
         transform.position = warpPosition;
         currentKunai = null;
+    }
+    // 적 밀어내는 박스 사라지게 하는 함수. 날라가고 0.1~0.3초뒤 끌것.
+    private void DeactivateObject()
+    {
+        HitboxController.Instance.isActive = false;
+
     }
 
     /// <summary>

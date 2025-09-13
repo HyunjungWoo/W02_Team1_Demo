@@ -3,6 +3,8 @@ using System.Collections;
 
 public class HitboxController : MonoBehaviour
 {
+    public bool isActive = false;
+    public static HitboxController Instance { get; private set; }
     [SerializeField] private GameObject player;
     private float knockbackForce = 10f;
 
@@ -21,6 +23,18 @@ public class HitboxController : MonoBehaviour
     // 폭발 프리펩
     public GameObject explosionPrefab;
 
+    private void Awake()
+    {
+        // 인스턴스가 이미 존재하면 새로 생성된 오브젝트를 파괴합니다.
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+
+        // 이 스크립트의 인스턴스를 Instance 변수에 할당합니다.
+        Instance = this;
+    }
     void Start()
     {
         // 게임 시작 시, 원래 카메라 크기와 위치를 저장해 둡니다.
@@ -34,6 +48,7 @@ public class HitboxController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!isActive) return;
         if (collision.CompareTag("Enemy"))
         {
             // 슬로우 모션 및 카메라 줌 효과를 시작합니다.
