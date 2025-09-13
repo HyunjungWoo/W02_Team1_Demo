@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Kunai
   - RotationPlatform
+  - MovingPlatform
   layers:
   - Default
   - TransparentFX

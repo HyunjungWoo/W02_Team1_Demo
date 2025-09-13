@@ -15,6 +15,8 @@ public class MovingPlatform : Platform
     private Vector2 startPos;
     private Vector2 lastPosition;
 
+    private ThrowableKunai stuckKunai;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -50,6 +52,7 @@ public class MovingPlatform : Platform
             pos.y += offset;
         }
 
+        
         return pos;
     }
 
@@ -73,5 +76,17 @@ public class MovingPlatform : Platform
                 }
             }
         }
+    }
+
+
+
+    public void SetKunaiTransform(ThrowableKunai kunai, Vector3 worldPos, Vector2 worldNormal)
+    {
+        stuckKunai = kunai;
+        kunai.transform.SetParent(this.transform, true);
+        kunai.transform.position = worldPos;
+
+        // 최초 Normal만 저장, 이후 갱신 없음
+        kunai.SetHitNormal(worldNormal);
     }
 }

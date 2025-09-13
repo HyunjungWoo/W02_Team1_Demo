@@ -68,17 +68,7 @@ public class ThrowableKunai : MonoBehaviour
     void Update()
     {
 
-        ////  감속 로직 추가
-        //if (rb.linearVelocity.sqrMagnitude > minSpeed * minSpeed)
-        //{
-        //    // 현재 속도에 감속 계수를 곱하여 속도를 줄입니다.
-        //    rb.linearVelocity *= dragFactor;
-        //}
-        //else
-        //{
-        //    // 최소 속도 이하가 되면 완전히 멈춥니다.
-        //    rb.linearVelocity = Vector2.zero;
-        //}
+        
 
 
         // ⭐ 속도가 0.01 이상일 때만 회전
@@ -87,68 +77,125 @@ public class ThrowableKunai : MonoBehaviour
             float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
-        //// --- 스프라이트 방향 회전 ---
-        //if (!isStuck && rb.linearVelocity.sqrMagnitude > 0.01f)
-        //{
-        //    float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
-        //    transform.rotation = Quaternion.Euler(0, 0, angle);
-        //}
+        
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (isInvincible) return;
+    //    if (borderObject != null)
+    //    {
+    //        borderObject.SetActive(true);
+    //    }
+
+    //    if (!isStuck && collision.CompareTag("RotationPlatform"))
+    //    {
+    //        isStuck = true;
+    //        rb.bodyType = RigidbodyType2D.Kinematic;
+    //        rb.linearVelocity = Vector2.zero;
+
+    //        RotationPlatform platform = collision.GetComponent<RotationPlatform>();
+
+    //        if (platform != null)
+    //        { // 현재 위치와 Normal을 local로 변환해서 전달
+    //            Vector3 localPos = platform.transform.InverseTransformPoint(transform.position);
+    //            Vector2 localNormal = platform.transform.InverseTransformDirection(Vector2.up); // 여기서 RotationPlatform 쪽 함수 호출
+    //            platform.SetKunaiTransform(this, localPos, localNormal);
+    //        }
+    //    }
+    //    // 벽에 꽂힌 경우
+    //    else if (!isStuck && collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
+    //    {
+    //        isStuck = true;
+
+    //        rb.linearVelocity = Vector2.zero;
+    //        rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+    //        GetComponent<TrailRenderer>().enabled = false;
+
+    //        //  벽 Normal 추출 (Raycast 방식)
+    //        // 쿠나이의 진행 방향 기준으로 짧게 Ray 쏴서 Normal 얻기
+    //        Vector2 dir = rb.linearVelocity.normalized;
+    //        if (dir == Vector2.zero) dir = transform.right; // 혹시 멈췄을 경우 대비
+
+    //        RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y) - dir * 0.1f, dir, 0.2f, LayerMask.GetMask("Wall"));
+    //        if (hit.collider != null)
+    //        {
+    //            hitNormal = hit.normal;
+    //        }
+    //    }
+    //    //  적에 꽂힌 경우
+    //    else if (!isStuck && collision.gameObject.CompareTag("Enemy"))
+    //    {
+    //        StickToEnemy(collision.transform);
+    //    }
+
+
+
+    //}
+
+
+    public void OnHit(RaycastHit2D hit, Vector2 throwDirection)
     {
-        if (isInvincible) return;
-        if (borderObject != null)
+        if (isStuck) return;
+        isStuck = true;
+
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.linearVelocity = Vector2.zero;
+
+        // 1. 살짝 안쪽으로 박히게 위치 보정
+        float insetDistance = 0.05f; // 벽 안으로 들어갈 거리
+        Vector2 finalPos = hit.point - hit.normal * insetDistance;
+        transform.position = finalPos;
+
+        // 2. 던진 방향으로 회전
+        float angle = Mathf.Atan2(throwDirection.y, throwDirection.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle);
+
+        // 3. Wall / Enemy / RotationPlatform 처리
+        if (hit.collider.CompareTag("Enemy"))
         {
-            borderObject.SetActive(true);
+            StickToEnemy(hit.collider.transform);
         }
-
-        // 벽에 꽂힌 경우
-        if (!isStuck && collision.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        else if (hit.collider.CompareTag("RotationPlatform"))
         {
-            isStuck = true;
-
-            rb.linearVelocity = Vector2.zero;
-            rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
-            GetComponent<TrailRenderer>().enabled = false;
-
-            //  벽 Normal 추출 (Raycast 방식)
-            // 쿠나이의 진행 방향 기준으로 짧게 Ray 쏴서 Normal 얻기
-            Vector2 dir = rb.linearVelocity.normalized;
-            if (dir == Vector2.zero) dir = transform.right; // 혹시 멈췄을 경우 대비
-
-            RaycastHit2D hit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y) - dir * 0.1f, dir, 0.2f, LayerMask.GetMask("Wall"));
-            if (hit.collider != null)
-            {
-                hitNormal = hit.normal;
-            }
-        }
-
-        //  적에 꽂힌 경우
-        if (!isStuck && collision.gameObject.CompareTag("Enemy"))
-        {
-            StickToEnemy(collision.transform);
-        }
-
-        if (!isStuck && collision.CompareTag("RotationPlatform"))
-        {
-            isStuck = true;
-            rb.bodyType = RigidbodyType2D.Kinematic;
-            rb.linearVelocity = Vector2.zero;
-
-            RotationPlatform platform = collision.GetComponent<RotationPlatform>();
-
+            RotationPlatform platform = hit.collider.GetComponent<RotationPlatform>();
             if (platform != null)
-            { // 현재 위치와 Normal을 local로 변환해서 전달
+            {
                 Vector3 localPos = platform.transform.InverseTransformPoint(transform.position);
-                Vector2 localNormal = platform.transform.InverseTransformDirection(Vector2.up); // 여기서 RotationPlatform 쪽 함수 호출
+                Vector2 localNormal = platform.transform.InverseTransformDirection(hit.normal);
                 platform.SetKunaiTransform(this, localPos, localNormal);
             }
         }
+        //else if (hit.collider.CompareTag("MovingPlatform"))
+        //{
+        //    MovingPlatform platform = hit.collider.GetComponent<MovingPlatform>();
+        //    if (platform != null)
+        //    {
+        //        Vector3 localPos = platform.transform.InverseTransformPoint(hit.point - hit.normal);
+        //        Vector2 localNormal = platform.transform.InverseTransformDirection(hit.normal);
+        //        platform.SetKunaiTransform(this, localPos, localNormal);
+        //    }
+        //}
 
+        else if (hit.collider.CompareTag("MovingPlatform"))
+        {
+            MovingPlatform platform = hit.collider.GetComponent<MovingPlatform>();
+            if (platform != null)
+            {
+                Vector2 worldPos = hit.point - hit.normal * 0.05f;
+                platform.SetKunaiTransform(this, worldPos, hit.normal);
+            }
+        }
+
+        else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Wall"))
+        {
+            hitNormal = hit.normal;
+            GetComponent<TrailRenderer>().enabled = false;
+        }
     }
 
-    private void StickToEnemy(Transform enemy)
+
+    void StickToEnemy(Transform enemy)
     {
         isStuck = true;
 

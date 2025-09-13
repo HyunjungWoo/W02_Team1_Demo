@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -2458586205367529888}
   m_Layer: 6
   m_Name: Vertical Moving Tilemap
-  m_TagString: wall
+  m_TagString: MovingPlatform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

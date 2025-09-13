@@ -74,6 +74,9 @@ public class RotationPlatform : MonoBehaviour
         kunai.SetHitNormal(worldNormal);
     }
 
+    
+
+
     //  회전할 때마다 hitNormal 갱신
     private void UpdateKunaiNormal()
     {
