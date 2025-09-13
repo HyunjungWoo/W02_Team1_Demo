@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: -6564103488121382543}
   - component: {fileID: -32676492490604770}
   - component: {fileID: -2458586205367529888}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Vertical Moving Tilemap
-  m_TagString: Untagged
+  m_TagString: wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

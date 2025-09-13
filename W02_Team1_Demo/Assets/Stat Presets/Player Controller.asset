@@ -31,6 +31,7 @@ MonoBehaviour:
   CoyoteTime: 0.05
   JumpBuffer: 0.2
   DashPower: 150
+
   DashDuration: 0.1
   DashCooldown: 0.5
   DashDrag: 0.7

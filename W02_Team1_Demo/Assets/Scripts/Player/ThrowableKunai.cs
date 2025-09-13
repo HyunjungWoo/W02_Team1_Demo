@@ -12,34 +12,75 @@ public class ThrowableKunai : MonoBehaviour
 
     // ⭐ 감속을 위한 변수 추가
     [Header("쿠나이 감속")]
-    [SerializeField] private float dragFactor = 0.98f; // 매 프레임마다 속도를 98%로 줄임
-    [SerializeField] private float minSpeed = 0.5f; // 이 속도 이하가 되면 멈춤
+    [SerializeField] private float minSpeed = 30.0f;
+    [SerializeField] float decreaseTime = 1.0f;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         StartCoroutine(BecomeVulnerableAfterDelay(0.02f));
     }
+
+    private void Start()
+    {
+        // 생성 시 감속 코드
+        StartCoroutine(DecreaseSpeed());
+    }
+
     private IEnumerator BecomeVulnerableAfterDelay(float delay)
     {
         isInvincible = true;
         yield return new WaitForSeconds(delay); // 0.1초 대기
         isInvincible = false;
     }
+
+    private IEnumerator DecreaseSpeed()
+    {
+        float startSpeed = rb.linearVelocity.magnitude;
+        Debug.Log(startSpeed);
+        if (startSpeed <= minSpeed) yield break;
+
+        float elapsed = 0f;
+        while (elapsed < decreaseTime && !isStuck)
+        {
+            float t = elapsed / decreaseTime;
+            float targetSpeed = Mathf.Lerp(startSpeed, minSpeed, t);
+
+            if (rb.linearVelocity.sqrMagnitude > 0.0001f)
+            {
+                Vector2 dir = rb.linearVelocity.normalized;
+                rb.linearVelocity = dir * targetSpeed;
+            }
+
+            elapsed += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+
+        // 마지막 보정
+        if (!isStuck && rb.linearVelocity.magnitude > minSpeed)
+        {
+            rb.linearVelocity = rb.linearVelocity.normalized * minSpeed;
+        }
+    }
+
+
+
     void Update()
     {
 
-        // ⭐ 감속 로직 추가
-        if (rb.linearVelocity.sqrMagnitude > minSpeed * minSpeed)
-        {
-            // 현재 속도에 감속 계수를 곱하여 속도를 줄입니다.
-            rb.linearVelocity *= dragFactor;
-        }
-        else
-        {
-            // 최소 속도 이하가 되면 완전히 멈춥니다.
-            rb.linearVelocity = Vector2.zero;
-        }
+        ////  감속 로직 추가
+        //if (rb.linearVelocity.sqrMagnitude > minSpeed * minSpeed)
+        //{
+        //    // 현재 속도에 감속 계수를 곱하여 속도를 줄입니다.
+        //    rb.linearVelocity *= dragFactor;
+        //}
+        //else
+        //{
+        //    // 최소 속도 이하가 되면 완전히 멈춥니다.
+        //    rb.linearVelocity = Vector2.zero;
+        //}
+
+
         // ⭐ 속도가 0.01 이상일 때만 회전
         if (rb.linearVelocity.sqrMagnitude > 0.01f)
         {

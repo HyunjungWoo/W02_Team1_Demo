@@ -146,7 +146,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stats: {fileID: 11400000, guid: 05e6a06c5af93134ab98ff12e2c27265, type: 2}
   kunaiPrefab: {fileID: 4995944801069903025, guid: 770b99388355d264aa7254d8c0b1ef55, type: 3}
-  thorwForce: 30
+  throwForce: 50
   aimLine: {fileID: 8880927873227072472}
   selfForce: 2
   superHeroLandingCheckBox: {fileID: 80109342349426505}
