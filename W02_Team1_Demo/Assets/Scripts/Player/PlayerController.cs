@@ -17,15 +17,15 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private Rigidbody2D rb;
     private CapsuleCollider2D col;
     private FrameInput frameInput;
-    private Vector2  frameVelocity;
-    private bool  cachedQueryStartInColliders;
-    private float  time;
+    private Vector2 frameVelocity;
+    private bool cachedQueryStartInColliders;
+    private float time;
     #endregion
 
     #region 대시 관련 변수
-    private bool    isDashing;
-    private float   dashTimeLeft;
-    private float   dashCooldownTimer;
+    private bool isDashing;
+    private float dashTimeLeft;
+    private float dashCooldownTimer;
 
     #endregion
 
@@ -61,6 +61,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     [Header("슈퍼히어로 랜딩 설정")]
     [SerializeField] private GameObject superHeroLandingCheckBox;
+
+    [Header("이펙트 관련 설정")]
+    [SerializeField] GameObject warpLinePrefab;
+    [SerializeField] float flashDuration = 0.4f;
     #endregion
 
     #region 인터페이스 구현
@@ -86,7 +90,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     }
 
-private void Start()
+    private void Start()
     {
         // 직접 만드신 Start() 내용: 카메라 및 조준선 초기화
         mainCamera = Camera.main;
@@ -127,7 +131,7 @@ private void Start()
         ApplyMovement();
     }
 
-   
+
 
     #region 입력 처리 (Input Handling)
 
@@ -218,7 +222,7 @@ private void Start()
         GameObject kunaiInstance = Instantiate(kunaiPrefab, playerPosition, rotation);
         currentKunai = kunaiInstance.GetComponent<ThrowableKunai>();
         Vector2 aimDirection = (mousePosition - playerPosition).normalized;
-        if(aimDirection.x < 0 && onLeftWall)
+        if (aimDirection.x < 0 && onLeftWall)
         {
             currentKunai.isInvincible = false;
         }
@@ -229,10 +233,44 @@ private void Start()
         kunaiInstance.GetComponent<Rigidbody2D>().AddForce(throwDirection * thorwForce, ForceMode2D.Impulse);
     }
 
+    IEnumerator FadeAndDestroy(GameObject lineObj, float duration)
+    {
+        LineRenderer line = lineObj.GetComponent<LineRenderer>();
+        float elapsed = 0f;
+        Color startColor = line.startColor;
+
+        while (elapsed < duration)
+        {
+            float t = elapsed / duration;
+            Color c = new Color(startColor.r, startColor.g, startColor.b, 1 - t);
+            line.startColor = c;
+            line.endColor = c;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(lineObj);
+    }
+
+    void CreateLineObject()
+    {
+        Vector3 startPos = transform.position;
+        Vector3 endPos = currentKunai.transform.position;
+
+        // 라인 오브젝트 생성
+        GameObject lineObj = Instantiate(warpLinePrefab);
+        LineRenderer line = lineObj.GetComponent<LineRenderer>();
+        line.SetPosition(0, startPos);
+        line.SetPosition(1, endPos);
+
+        StartCoroutine(FadeAndDestroy(lineObj, flashDuration));
+    }
+
     private void WarpToKunai()
     {
+        CreateLineObject();
         Vector3 warpPosition = currentKunai.transform.position;
-       
+
         transform.position = warpPosition;
 
         Transform enemyTransform = currentKunai.transform.parent;
@@ -298,9 +336,12 @@ private void Start()
         }
 
 
+
+
         Destroy(currentKunai.gameObject); // 워프 후 쿠나이는 파괴
         currentKunai = null;
     }
+
 
     public void StartSlowMotionEffect()
     {
@@ -409,9 +450,9 @@ private void Start()
 
     private void HandleJump()
     {
-        if(isDashing) return; // 대쉬 중에는 점프 불가
+        if (isDashing) return; // 대쉬 중에는 점프 불가
 
-        if(jumpToConsume && (isWallSliding || CanUseWallCoyote))
+        if (jumpToConsume && (isWallSliding || CanUseWallCoyote))
         {
             ExecuteWallJump();
             return;
@@ -483,7 +524,7 @@ private void Start()
             dashCooldownTimer = stats.DashCooldown; // 쿨타임 초기화
         }
 
-        if(isDashing)
+        if (isDashing)
         {
             frameVelocity *= stats.DashDrag; // 대시 감속 적용
             dashTimeLeft -= Time.fixedDeltaTime;
@@ -498,7 +539,7 @@ private void Start()
     }
 
     private void HandleWallSlide()
-    { 
+    {
         var wasWallSliding = isWallSliding; // 변경 전 상태를 기록
 
         if ((onRightWall || onLeftWall) && !grounded && frameVelocity.y < 0)
@@ -564,7 +605,7 @@ private void Start()
     // Gravity
     private void HandleGravity()
     {
-        if(isDashing || isWallSliding) return;
+        if (isDashing || isWallSliding) return;
 
         if (grounded && frameVelocity.y <= 0f)
         {
