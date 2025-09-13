@@ -18,7 +18,8 @@ public class DestroyOutsideCamera : MonoBehaviour
             viewPos.y < 0 || viewPos.y > 1 ||
             viewPos.z < 0) // 카메라 뒤쪽
         {
-            Destroy(gameObject);
+            if (!gameObject.GetComponent<ThrowableKunai>().IsStuck())
+                Destroy(gameObject);
         }
     }
 }
