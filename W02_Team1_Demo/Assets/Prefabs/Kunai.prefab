@@ -389,6 +389,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   borderObject: {fileID: 4947394043565288395}
+  isInvincible: 0
+  dragFactor: 0.997
+  minSpeed: 0
 --- !u!50 &5651282726693479036
 Rigidbody2D:
   serializedVersion: 5
