@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 91113065715153046}
   - component: {fileID: -1442244410043067150}
   - component: {fileID: 3710446997748228923}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Reflection Tilemap
-  m_TagString: Untagged
+  m_TagString: ReflectionPlatform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

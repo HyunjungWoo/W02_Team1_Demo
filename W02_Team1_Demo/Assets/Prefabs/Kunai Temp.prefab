@@ -352,7 +352,7 @@ GameObject:
   - component: {fileID: -6039865742521574113}
   - component: {fileID: 960887934662060822}
   m_Layer: 0
-  m_Name: Kunai Ray
+  m_Name: Kunai Temp
   m_TagString: Kunai
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

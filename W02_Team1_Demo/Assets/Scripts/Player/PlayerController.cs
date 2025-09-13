@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -49,7 +50,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     #region 쿠나이 관련 변수
     [Header("던지기 설정")]
     public GameObject kunaiPrefab;
-    public float throwForce = 50f;
+
     public LineRenderer aimLine;
 
     [Header("반동 설정")]
@@ -65,6 +66,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [Header("이펙트 관련 설정")]
     [SerializeField] GameObject warpLinePrefab;
     [SerializeField] float flashDuration = 0.4f;
+    
+    [SerializeField] private int maxReflections = 30;
+    // 궤적 포인트 기록용
+    private List<Vector3> linePoints = new List<Vector3>();
+
     #endregion
 
     #region 인터페이스 구현
@@ -209,32 +215,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         aimLine.SetPosition(1, playerPosition + aimDirection * 5f);
     }
 
-    //private void ThrowKunai()
-    //{
-    //    if (currentKunai != null) Destroy(currentKunai.gameObject);
 
-    //    Vector2 playerPosition = transform.position;
-    //    Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-    //    Vector2 throwDirection = (mousePosition - playerPosition).normalized;
-    //    float angle = Mathf.Atan2(throwDirection.y, throwDirection.x) * Mathf.Rad2Deg;
-    //    Quaternion rotation = Quaternion.Euler(0, 0, angle);
-
-    //    GameObject kunaiInstance = Instantiate(kunaiPrefab, playerPosition, rotation);
-    //    currentKunai = kunaiInstance.GetComponent<ThrowableKunai>();
-    //    Vector2 aimDirection = (mousePosition - playerPosition).normalized;
-    //    if (aimDirection.x < 0 && onLeftWall)
-    //    {
-    //        currentKunai.isInvincible = false;
-    //    }
-    //    else if (aimDirection.x > 0 && onRightWall)
-    //    {
-    //        currentKunai.isInvincible = false;
-    //    }
-    //    kunaiInstance.GetComponent<Rigidbody2D>().AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
-
-
-
-    //}
 
     private void ThrowKunai()
     {
@@ -244,79 +225,97 @@ public class PlayerController : MonoBehaviour, IPlayerController
         Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector2 throwDirection = (mousePosition - playerPosition).normalized;
 
-        // --- Enemy, Wall, Kunai 레이어만 감지 ---
-        int layerMask = LayerMask.GetMask("Enemy", "Wall", "Kunai");
+        // 포인트 초기화
+        linePoints.Clear();
+        linePoints.Add(playerPosition);
 
-        RaycastHit2D hit = Physics2D.Raycast(playerPosition, throwDirection, Mathf.Infinity, layerMask);
+        // 레이캐스트 실행
+        CastKunaiRay(playerPosition, throwDirection, maxReflections);
+
+        // 라인 오브젝트 생성 + 페이드
+        FinalizeLine();
+    }
+
+    private void CastKunaiRay(Vector2 startPos, Vector2 direction, int reflectionsLeft)
+    {
+        if (reflectionsLeft <= 0) return;
+
+        int layerMask = LayerMask.GetMask("Enemy", "Wall", "ReflectionPlatform", "NoneStuck", "Kunai");
+        RaycastHit2D hit = Physics2D.Raycast(startPos, direction, Mathf.Infinity, layerMask);
 
         if (hit.collider != null)
         {
+            // 포인트 기록
+            linePoints.Add(hit.point);
+
             Vector3 viewportPoint = mainCamera.WorldToViewportPoint(hit.point);
             bool isInView = viewportPoint.x >= 0 && viewportPoint.x <= 1 &&
                             viewportPoint.y >= 0 && viewportPoint.y <= 1 &&
                             viewportPoint.z > 0;
 
-            //if (isInView)
-            //{
-            //    Debug.Log($"쿠나이 던짐 성공 → 맞은 오브젝트: {hit.collider.gameObject.name} (Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)})");
+            if (!isInView) return;
 
-            //    float angle = Mathf.Atan2(throwDirection.y, throwDirection.x) * Mathf.Rad2Deg;
-            //    Quaternion rotation = Quaternion.Euler(0, 0, angle);
-
-            //    GameObject kunaiInstance = Instantiate(kunaiPrefab, playerPosition, rotation);
-            //    currentKunai = kunaiInstance.GetComponent<ThrowableKunai>();
-
-            //    Vector2 aimDirection = (mousePosition - playerPosition).normalized;
-            //    if (aimDirection.x < 0 && onLeftWall)
-            //        currentKunai.isInvincible = false;
-            //    else if (aimDirection.x > 0 && onRightWall)
-            //        currentKunai.isInvincible = false;
-
-            //    kunaiInstance.GetComponent<Rigidbody2D>()
-            //        .AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
-            //}
-
-            if (isInView)
+            // NoneStuck 레이어 맞으면 즉시 중단
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("NoneStuck"))
             {
-                Debug.Log($"쿠나이 히트스캔 성공 → 맞은 오브젝트: {hit.collider.gameObject.name} (Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)})");
+                Debug.Log($"Raycast: NoneStuck 맞음 → 레이캐스트 중단 ({hit.collider.gameObject.name})");
+                return;
+            }
 
-                // 쿠나이를 맞은 위치에 직접 생성
-                float angle = Mathf.Atan2(throwDirection.y, throwDirection.x) * Mathf.Rad2Deg;
-                Quaternion rotation = Quaternion.Euler(0, 0, angle);
+            if (hit.collider.CompareTag("ReflectionPlatform"))
+            {
+                ReflectionPlatform reflection = hit.collider.GetComponent<ReflectionPlatform>();
+                Vector2 normal = reflection.GetSurfaceNormal();
 
-                GameObject kunaiInstance = Instantiate(kunaiPrefab, hit.point, rotation);
-                currentKunai = kunaiInstance.GetComponent<ThrowableKunai>();
+                Vector2 reflectedDir = Vector2.Reflect(direction, normal).normalized;
+                Debug.DrawRay(hit.point, reflectedDir * 2f, Color.yellow, 1f);
 
-                // 무적 여부
-                Vector2 aimDirection = (mousePosition - playerPosition).normalized;
-                if (aimDirection.x < 0 && onLeftWall)
-                    currentKunai.isInvincible = false;
-                else if (aimDirection.x > 0 && onRightWall)
-                    currentKunai.isInvincible = false;
-
-                // Rigidbody는 필요 없음 → 바로 박히게
-                Rigidbody2D rb = kunaiInstance.GetComponent<Rigidbody2D>();
-                rb.bodyType = RigidbodyType2D.Kinematic;
-                rb.linearVelocity = Vector2.zero;
-
-                // 벽 Normal 저장
-                currentKunai.SetHitNormal(hit.normal);
-
-                // 히트 결과를 쿠나이에 저장
-                currentKunai.OnHit(hit, throwDirection);
-
+                // 재귀 반사
+                CastKunaiRay(hit.point + reflectedDir * 0.01f, reflectedDir, reflectionsLeft - 1);
+            } else if (hit.collider.CompareTag("LockPlatform"))
+            {
+                Debug.Log($"Raycast: 잠긴 플랫폼 맞음 → 레이캐스트 중단 ({hit.collider.gameObject.name})");
+                return;
             }
             else
             {
-                Debug.Log($"히트({hit.collider.gameObject.name})했지만 카메라 밖이라 던지기 취소");
+                // 최종 히트 → 쿠나이 박기
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                Quaternion rotation = Quaternion.Euler(0, 0, angle);
+
+                GameObject kunaiInstance = Instantiate(kunaiPrefab, hit.point - hit.normal * 0.05f, rotation);
+                currentKunai = kunaiInstance.GetComponent<ThrowableKunai>();
+                currentKunai.OnHit(hit, direction);
+
+                return; // 여기서 종료
             }
         }
         else
         {
-            Debug.Log("Raycast 히트 없음 (Enemy/Wall/Kunai 없음) → 던지기 취소");
+            // 히트 없음 → 멀리까지
+            linePoints.Add(startPos + direction * 30f);
         }
     }
 
+
+    private void FinalizeLine()
+    {
+        if (linePoints.Count < 2) return;
+
+        // 라인 오브젝트 생성
+        GameObject lineObj = Instantiate(warpLinePrefab);
+        LineRenderer newLine = lineObj.GetComponent<LineRenderer>();
+
+        // 포인트 복사
+        newLine.positionCount = linePoints.Count;
+        for (int i = 0; i < linePoints.Count; i++)
+        {
+            newLine.SetPosition(i, linePoints[i]);
+        }
+
+        // 서서히 사라지게
+        StartCoroutine(FadeAndDestroy(lineObj, flashDuration));
+    }
 
 
 

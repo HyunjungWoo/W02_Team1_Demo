@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 8880927873227072472}
   - component: {fileID: 5524559016688831797}
   m_Layer: 7
-  m_Name: Player Ray
+  m_Name: Player Temp
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -127,7 +127,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.00817, y: -0.51137, z: 0.4721868}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7732347783410705627}
   m_Father: {fileID: 0}
@@ -145,7 +145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: {fileID: 11400000, guid: 05e6a06c5af93134ab98ff12e2c27265, type: 2}
-  kunaiPrefab: {fileID: 4995944801069903025, guid: 46004ec8c5ea0ad458239342fcd819de, type: 3}
+  kunaiPrefab: {fileID: 4995944801069903025, guid: 47a3a66e91683804e93d9b5c91fa16b5, type: 3}
   throwForce: 50
   aimLine: {fileID: 8880927873227072472}
   selfForce: 2

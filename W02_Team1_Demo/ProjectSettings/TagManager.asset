@@ -9,6 +9,8 @@ TagManager:
   - Kunai
   - RotationPlatform
   - MovingPlatform
+  - ReflectionPlatform
+  - LockPlatform
   layers:
   - Default
   - TransparentFX
@@ -22,7 +24,7 @@ TagManager:
   - Enemy
   - BackGround
   - Kunai
-  - 
+  - NoneStuck
   - 
   - 
   - 
