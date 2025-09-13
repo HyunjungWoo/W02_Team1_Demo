@@ -13,16 +13,28 @@ public class Projectile : MonoBehaviour
 
     Vector2 dir;
 
+    private Rigidbody2D rb;
+
     /// <summary>생성 직후 호출: 진행 방향 세팅</summary>
     public void Init(Vector2 direction)
     {
         dir = direction.normalized;
+        rb = GetComponent<Rigidbody2D>();
+        if(rb == null)
+        {
+            Debug.Log("리즈드바디 넣으세요");
+        }
         Destroy(gameObject, life); // 일정 시간 뒤 자동 삭제
     }
 
     void Update()
     {
         transform.position += (Vector3)(dir * speed * Time.deltaTime);
+        
+        // gameobject 날라가는 direction방향으로 회전
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, angle);
+
     }
 
     void OnTriggerEnter2D(Collider2D col)

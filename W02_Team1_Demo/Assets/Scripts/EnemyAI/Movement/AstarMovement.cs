@@ -6,9 +6,10 @@ using Pathfinding;
 public class AstarMovement : MonoBehaviour
 {
     [Header("이동 설정")]
-    public float moveSpeed = 4f;
-    public float nextWaypointDistance = 1f;
-    public float pathUpdateInterval = 0.5f;
+    public float moveSpeed = 5f;  // 목표 최고 속도
+    public float accel = 30f;         // 가속도 추가
+    public float nextWaypointDistance = 0.8f;
+    public float pathUpdateInterval = 0.4f;
 
     private Path path;
     private int currentWaypoint = 0;
@@ -61,7 +62,9 @@ public class AstarMovement : MonoBehaviour
 
         // ★★★ 가장 중요한 수정 부분 ★★★
         // X축 속도만 제어하고, Y축 속도는 현재 물리 상태(중력 등)를 그대로 유지합니다.
-        rb.linearVelocity = new Vector2(direction.x * moveSpeed, rb.linearVelocity.y);
+        float targetVx = direction.x * moveSpeed;
+        float newVx = Mathf.MoveTowards(rb.linearVelocity.x, targetVx, accel * Time.fixedDeltaTime);
+        rb.linearVelocity = new Vector2(newVx, rb.linearVelocity.y);
 
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
         if (distance < nextWaypointDistance)
