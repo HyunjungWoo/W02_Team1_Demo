@@ -91,6 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b362ba5a4323a424eaa795482f2a4fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isActive: 0
   player: {fileID: 8759391789214341685}
   mainCamera: {fileID: 0}
   explosionPrefab: {fileID: 6584862412185148141, guid: ec3e37b78cf47ae419c63ab62edd79dc, type: 3}
@@ -150,7 +151,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8038f1dfbbd8e644aac8db365752f2a1, type: 2}
+  - {fileID: 2100000, guid: 56195d38d93ded14698edc87253677f2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -181,7 +182,7 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.17391124
+        value: 1
         inSlope: 0.04409997
         outSlope: 0.04409997
         tangentMode: 0
@@ -189,20 +190,29 @@ TrailRenderer:
         inWeight: 0
         outWeight: 0.1412607
       - serializedVersion: 3
-        time: 0.9973332
-        value: 0
-        inSlope: -0.12175327
-        outSlope: -0.12175327
+        time: 0.43014267
+        value: 1.0040206
+        inSlope: -0.0025279364
+        outSlope: -0.0025279364
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.14705881
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 0.5477905
+        value: 0.019841194
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 1, g: 0.93979645, b: 0, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 0.32941177}
       key2: {r: 1, g: 1, b: 1, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -275,7 +285,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.00817, y: -0.51137, z: 0.4721868}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7732347783410705627}
   - {fileID: 3784924956452235778}
@@ -312,7 +322,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8038f1dfbbd8e644aac8db365752f2a1, type: 2}
+  - {fileID: 2100000, guid: 87dee5d03323e4003a9785eface0284a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -351,6 +361,7 @@ MonoBehaviour:
   thorwForce: 30
   aimLine: {fileID: 8880927873227072472}
   selfForce: 2
+  superHeroLandingCheckBox: {fileID: 80109342349426505}
 --- !u!50 &6861478885976935308
 Rigidbody2D:
   serializedVersion: 5
@@ -439,7 +450,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8038f1dfbbd8e644aac8db365752f2a1, type: 2}
+  - {fileID: 2100000, guid: 87dee5d03323e4003a9785eface0284a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
