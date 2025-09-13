@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -67,6 +68,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private bool CanUseWallCoyote => !grounded && time <= frameLeftWall + stats.WallCoyoteTime;
     public event Action<bool, float> GroundedChanged;
     public event Action Jumped;
+    #endregion
+
+    #region 슬로우 모션 변수
+    [Header("슬로우 모션 효과")]
+    private float slowdownFactor = 0.3f; // 얼마나 느려지게 할지 (0.05 = 5%)
+    private float slowdownLength = 1f;   // 슬로우 모션 지속 시간 (초)
+
     #endregion
 
     private void Awake()
@@ -245,8 +253,9 @@ private void Start()
                 rb.linearVelocity = Vector2.zero;
                 // 위쪽으로 튀어 오르는 힘을 줍니다.
                 rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
-                rb.AddForce(Vector2.left * selfForce, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.right * selfForce, ForceMode2D.Impulse);
             }
+            StartSlowMotionEffect();
 
         }
         else
@@ -269,6 +278,29 @@ private void Start()
 
         Destroy(currentKunai.gameObject); // 워프 후 쿠나이는 파괴
         currentKunai = null;
+    }
+
+    public void StartSlowMotionEffect()
+    {
+        // 코루틴을 사용하여 시간의 흐름에 따라 효과를 적용하고 해제합니다.
+        StartCoroutine(SlowMotionCoroutine());
+    }
+
+    private IEnumerator SlowMotionCoroutine()
+    {
+        // --- 효과 시작 ---
+        // 1. 시간을 느리게 만듭니다.
+        Time.timeScale = slowdownFactor;
+        // 2. FixedUpdate의 호출 주기도 시간에 맞춰 느려지므로, 이를 보정해줍니다.
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+        yield return new WaitForSecondsRealtime(slowdownLength);
+
+        // --- 효과 종료 ---
+        // 1. 시간을 원래 속도로 되돌립니다.
+        Time.timeScale = 1f;
+        // 2. FixedUpdate 시간도 원래대로 복구합니다.
+        Time.fixedDeltaTime = 0.02f;
+
     }
     // 적 밀어내는 박스 사라지게 하는 함수. 날라가고 0.1~0.3초뒤 끌것.
     private void DeactivateObject()
