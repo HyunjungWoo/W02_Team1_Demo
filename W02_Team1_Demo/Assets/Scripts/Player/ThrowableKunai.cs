@@ -37,7 +37,7 @@ public class ThrowableKunai : MonoBehaviour
     private IEnumerator DecreaseSpeed()
     {
         float startSpeed = rb.linearVelocity.magnitude;
-        Debug.Log(startSpeed);
+        
         if (startSpeed <= minSpeed) yield break;
 
         float elapsed = 0f;
