@@ -249,11 +249,33 @@ private void Start()
             // 4. 자신의 Rigidbody에 위쪽으로 힘을 가해 반동 효과를 줍니다.
             if (rb != null)
             {
-                // 기존 속도를 0으로 초기화하여 힘이 더 깔끔하게 들어가도록 합니다.
-                rb.linearVelocity = Vector2.zero;
-                // 위쪽으로 튀어 오르는 힘을 줍니다.
-                rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
-                rb.AddForce(Vector2.right * selfForce, ForceMode2D.Impulse);
+                Vector2 launchDirection;
+
+                // 1. 플레이어의 수평 입력(x)만 확인합니다.
+                float horizontalInput = frameInput.Move.x;
+
+                // 2. 수평 입력이 있는지 없는지에 따라 방향을 결정합니다.
+                if (horizontalInput != 0)
+                {
+                    // 입력이 있으면: 수평 방향과 위쪽 방향(1)을 조합하여 대각선 벡터를 만듭니다.
+                    // Mathf.Sign()으로 방향을 -1(왼쪽) 또는 1(오른쪽)로 고정합니다.
+                    launchDirection = new Vector2(Mathf.Sign(horizontalInput), 1);
+                }
+                else
+                {
+                    // 수평 입력이 없으면: 이전처럼 위로만 튕겨나갑니다.
+                    launchDirection = Vector2.up;
+                }
+
+                // 3. 계산된 방향으로 'EnemyKillLaunchPower' 만큼의 속도를 부여합니다.
+                frameVelocity = launchDirection.normalized * stats.EnemyKillLaunchPower;
+                //// 기존 속도를 0으로 초기화하여 힘이 더 깔끔하게 들어가도록 합니다.
+                //rb.linearVelocity = Vector2.zero;
+                //// 위쪽으로 튀어 오르는 힘을 줍니다.
+                //rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
+                //rb.AddForce(Vector2.right * selfForce, ForceMode2D.Impulse);
+
+
             }
             StartSlowMotionEffect();
 
