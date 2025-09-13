@@ -106,7 +106,7 @@ MonoBehaviour:
   damage: 1
   hitMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
 --- !u!50 &7004069889056149704
 Rigidbody2D:
   serializedVersion: 5
