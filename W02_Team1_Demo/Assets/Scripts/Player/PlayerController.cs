@@ -216,6 +216,7 @@ private void Start()
     {
         Vector3 warpPosition = currentKunai.transform.position;
        
+        transform.position = warpPosition;
 
         Transform enemyTransform = currentKunai.transform.parent;
         if (enemyTransform != null && enemyTransform.CompareTag("Enemy"))
@@ -246,6 +247,8 @@ private void Start()
 
             // 벽 보정
             warpPosition = CheckWallInner(warpPosition);
+            transform.position = warpPosition;
+
         }
         // 반동 효과
         if (rb != null)
@@ -256,7 +259,6 @@ private void Start()
 
 
         Destroy(currentKunai.gameObject); // 워프 후 쿠나이는 파괴
-        transform.position = warpPosition;
         currentKunai = null;
     }
     // 적 밀어내는 박스 사라지게 하는 함수. 날라가고 0.1~0.3초뒤 끌것.
