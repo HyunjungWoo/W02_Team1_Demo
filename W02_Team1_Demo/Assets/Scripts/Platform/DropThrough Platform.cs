@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(PlatformEffector2D), typeof(Collider2D))]
+[RequireComponent(typeof(PlatformEffector2D), typeof(CompositeCollider2D))]
 public class DropThroughPlatform : Platform
 {
     private PlatformEffector2D effector;
-    [SerializeField] private float disableDuration = 0.3f; // 얼마 동안 충돌을 끌지
+    [SerializeField] private float disableDuration = 0.3f; // 얼마 동안 아래로 통과 가능하게 할지
     private bool isDropping = false;
 
     private void Awake()
@@ -17,29 +17,26 @@ public class DropThroughPlatform : Platform
     {
         if (isDropping) return;
 
-        // 플레이어와 충돌 중일 때만 작동
         if (collision.gameObject.CompareTag("Player"))
         {
-            // 아래키 입력 감지
             if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
             {
-                StartCoroutine(DisableCollisionTemporarily(collision.collider));
+                StartCoroutine(DropThrough());
             }
         }
     }
 
-    private IEnumerator DisableCollisionTemporarily(Collider2D playerCollider)
+    private IEnumerator DropThrough()
     {
         isDropping = true;
 
-        // 플레이어와 이 플랫폼의 충돌을 무시
-        Physics2D.IgnoreCollision(playerCollider, GetComponent<Collider2D>(), true);
+        // Effector를 180도 회전시켜서 아래쪽 통과 가능하게
+        effector.rotationalOffset = 180f;
 
-        // 지정된 시간만큼 대기
         yield return new WaitForSeconds(disableDuration);
 
-        // 충돌 다시 활성화
-        Physics2D.IgnoreCollision(playerCollider, GetComponent<Collider2D>(), false);
+        // 다시 위쪽에서만 충돌되도록 복구
+        effector.rotationalOffset = 0f;
 
         isDropping = false;
     }
