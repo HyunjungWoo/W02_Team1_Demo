@@ -444,11 +444,15 @@ private void Start()
         // 대쉬 시작 조건 확인
         if (frameInput.DashDown && dashCooldownTimer <= 0 && !isDashing)
         {
-            Vector2 dashDirection = frameInput.Move;
-            if (dashDirection == Vector2.zero)
-            {
-                dashDirection = new Vector2(transform.localScale.x, 0); // 기본적으로 캐릭터가 바라보는 방향으로 대시
+            Vector2 dashDirection;
 
+            if (frameInput.Move.x != 0) // 좌우 입력이 있을 때 
+            {
+                dashDirection = new Vector2(Mathf.Sign(frameInput.Move.x), 0);  // sign으로 -1,1로 방향 고정
+            }
+            else
+            {
+                dashDirection = new Vector2(transform.localScale.x, 0); // 입력 없으면 바라보는 방향으로 대시
             }
 
             isDashing = true;
