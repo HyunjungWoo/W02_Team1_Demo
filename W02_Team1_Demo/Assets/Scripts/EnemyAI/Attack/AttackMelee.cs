@@ -7,6 +7,9 @@ public class AttackMelee : MonoBehaviour
     public Collider2D hitbox;
     public float hitboxOffset = 0.5f;
 
+    [Header("공격 예고(Telegraph)")]
+    public GameObject telegraphObject; // [추가] 공격 예고 오브젝트
+
     [Header("타이밍")]
     public float windup = 0.1f;
     public float active = 0.2f;
@@ -36,6 +39,19 @@ public class AttackMelee : MonoBehaviour
     {
         if (!IsReady) return;
         runner.StartCoroutine(AttackCo());
+    }
+
+    // --- Telegraph 제어 함수 ---
+    public void ShowTelegraph()
+    {
+        if (!telegraphObject) return;
+        UpdateAttackVisualsFacingAndPosition(); // 방향 먼저 맞추고
+        telegraphObject.SetActive(true); // 켜기
+    }
+
+    public void HideTelegraph()
+    {
+        if (telegraphObject) telegraphObject.SetActive(false); // 끄기
     }
 
     void Awake()
@@ -69,6 +85,7 @@ public class AttackMelee : MonoBehaviour
         // 히트박스는 기본적으로 꺼두기(안전)
         if (hitbox) hitbox.enabled = false;
         else Debug.LogWarning($"{gameObject.name}의 AttackMelee에 히트박스가 할당되지 않았습니다!");
+        HideTelegraph();
     }
 
     IEnumerator AttackCo()
@@ -124,6 +141,12 @@ public class AttackMelee : MonoBehaviour
             // X 위치를 |원래 X 위치| * 방향으로 설정하여 항상 몸 바깥쪽을 향하게 합니다.
             float newX = Mathf.Abs(attackSpriteRenderer.transform.localPosition.x) * directionMultiplier;
             attackSpriteRenderer.transform.localPosition = new Vector3(newX, attackSpriteRenderer.transform.localPosition.y, attackSpriteRenderer.transform.localPosition.z);
+        }
+
+        if (telegraphObject != null)
+        {
+            float newX = Mathf.Abs(telegraphObject.transform.localPosition.x) * directionMultiplier;
+            telegraphObject.transform.localPosition = new Vector3(newX, telegraphObject.transform.localPosition.y, telegraphObject.transform.localPosition.z);
         }
 
         // 2. 히트박스 위치 조절

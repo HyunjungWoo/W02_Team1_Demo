@@ -65,4 +65,11 @@ public static void SetCleared()
     Cursor.lockState = CursorLockMode.None;
     Cursor.visible = true;
 }
+
+    [ContextMenu("GameOver")]
+    public void gameOver()
+    {
+        Debug.Log("```");
+    }
+    
 }

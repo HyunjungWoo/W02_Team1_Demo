@@ -30,9 +30,10 @@ MonoBehaviour:
   JumpEndEarlyGravityModifier: 3
   CoyoteTime: 0.05
   JumpBuffer: 0.2
-  DashPower: 50
+  DashPower: 150
   DashDuration: 0.1
   DashCooldown: 0.5
+  DashDrag: 0.7
   WallLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -40,3 +41,4 @@ MonoBehaviour:
   WallStickDuration: 0.25
   WallJumpPower: {x: 20, y: 30}
   WallCoyoteTime: 0.1
+  EnemyKillLaunchPower: 50
