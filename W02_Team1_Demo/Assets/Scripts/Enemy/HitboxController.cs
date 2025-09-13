@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections; // 코루틴 사용을 위해 추가
+using System.Collections;
 
 public class HitboxController : MonoBehaviour
 {
@@ -8,22 +8,27 @@ public class HitboxController : MonoBehaviour
 
     [Header("슬로우 모션 효과")]
     private float slowdownFactor = 0.3f; // 얼마나 느려지게 할지 (0.05 = 5%)
-    private float slowdownLength = 4f;  // 슬로우 모션 지속 시간 (초)
+    private float slowdownLength = 4f;   // 슬로우 모션 지속 시간 (초)
 
     [Header("카메라 줌 효과")]
     [SerializeField] private Camera mainCamera; // 메인 카메라를 인스펙터에서 연결
     private float zoomInSize = 10f; // 줌 했을 때 카메라 크기 (작을수록 확대)
     private float originalCameraSize; // 원래 카메라 크기를 저장할 변수
 
+    // ⭐ 추가된 코드: 원래 카메라 위치를 저장할 변수
+    private Vector3 originalCameraPosition;
+
     // 폭발 프리펩
     public GameObject explosionPrefab;
 
     void Start()
     {
-        // 게임 시작 시, 원래 카메라 크기를 저장해 둡니다.
+        // 게임 시작 시, 원래 카메라 크기와 위치를 저장해 둡니다.
         if (mainCamera != null)
         {
             originalCameraSize = mainCamera.orthographicSize;
+            // ⭐ 추가된 코드: 카메라의 현재 위치를 저장
+            originalCameraPosition = mainCamera.transform.position;
         }
     }
 
@@ -66,10 +71,17 @@ public class HitboxController : MonoBehaviour
         Time.timeScale = slowdownFactor;
         // 2. FixedUpdate의 호출 주기도 시간에 맞춰 느려지므로, 이를 보정해줍니다.
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
-        // 3. 카메라를 확대합니다.
+
         if (mainCamera != null)
         {
+            // 3. 카메라를 확대합니다.
             mainCamera.orthographicSize = zoomInSize;
+
+            // ⭐ 추가된 코드: 카메라의 위치를 플레이어 위치로 변경합니다.
+            // Z축은 변경하지 않습니다.
+            Vector3 newCameraPosition = player.transform.position;
+            newCameraPosition.z = mainCamera.transform.position.z;
+            mainCamera.transform.position = newCameraPosition;
         }
 
         // --- 효과 지속 ---
@@ -82,10 +94,14 @@ public class HitboxController : MonoBehaviour
         Time.timeScale = 1f;
         // 2. FixedUpdate 시간도 원래대로 복구합니다.
         Time.fixedDeltaTime = 0.02f;
-        // 3. 카메라도 원래 크기로 되돌립니다.
+
         if (mainCamera != null)
         {
+            // 3. 카메라도 원래 크기로 되돌립니다.
             mainCamera.orthographicSize = originalCameraSize;
+
+            // ⭐ 추가된 코드: 카메라를 원래 위치로 되돌립니다.
+            mainCamera.transform.position = originalCameraPosition;
         }
     }
 }
