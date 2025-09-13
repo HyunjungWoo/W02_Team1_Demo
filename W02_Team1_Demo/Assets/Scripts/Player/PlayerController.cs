@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
+
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Experimental.GlobalIllumination;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal.Internal;
-using UnityEngine.UIElements;
+
+
+
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))] // 연결하지 않아도 자동으로 연결
 public class PlayerController : MonoBehaviour, IPlayerController
@@ -67,7 +65,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [SerializeField] GameObject warpLinePrefab;
     [SerializeField] GameObject kunaiLinePrefab;
     [SerializeField] float flashDuration = 0.4f;
-    
+
     [SerializeField] private int maxReflections = 30;
     [SerializeField] private Texture2D[] lineFrames;   // 프레임 이미지 넣기
     [SerializeField] private float frameInterval = 0.1f; // 프레임 교체 간격
@@ -91,13 +89,23 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     #endregion
 
+    #region 애니메이션 변수
+    [Header("애니메이션 관련 효과")]
+    [SerializeField] GameObject playerAnimation;
+
+    String[] animationClipNames = { "isThrow1", "isThrow2" };
+    Animator playerAnimator;
+
+
+    #endregion
+
     private void Awake()
     {
         // Tarodev의 Awake() 내용: 필수 컴포넌트 초기화
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
+        playerAnimator = playerAnimation.GetComponent<Animator>();
         cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
-
     }
 
     private void Start()
@@ -225,9 +233,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
     {
         if (currentKunai != null) Destroy(currentKunai.gameObject);
 
+
         Vector2 playerPosition = transform.position;
         Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector2 throwDirection = (mousePosition - playerPosition).normalized;
+
+        // 애니메이션 실행
+        ThrowAnimation(throwDirection);
 
         // 포인트 초기화
         linePoints.Clear();
@@ -239,6 +251,53 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // 라인 오브젝트 생성 + 페이드
         FinalizeLine();
     }
+
+    private void ThrowAnimation(Vector2 throwDirection)
+    {
+
+
+        // 현재 바라보는 방향 (HandleDirection에서 세팅됨)
+        int facingDir = (transform.localScale.x > 0) ? 1 : -1;
+
+        // 던지는 방향 (마우스 위치 기준)
+        int throwDir = (throwDirection.x >= 0) ? 1 : -1;
+
+
+        // flip 여부 결정
+        SpriteRenderer sr = playerAnimation.GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            sr.flipX = (facingDir != throwDir);
+        }
+
+        float angle = Mathf.Atan2(throwDirection.y, throwDirection.x) * Mathf.Rad2Deg;
+        if (facingDir == throwDir)
+        {
+            if (facingDir < 0)
+                playerAnimation.transform.rotation = Quaternion.Euler(0, 0, angle + 180f);
+            else
+                playerAnimation.transform.rotation = Quaternion.Euler(0, 0, angle);
+
+        }
+        else
+        {
+
+            if (facingDir < 0)
+                playerAnimation.transform.rotation = Quaternion.Euler(0, 0, angle);
+            else
+                playerAnimation.transform.rotation = Quaternion.Euler(0, 0, angle - 180f);
+        }
+
+
+        // 50% 확률로 throw1, throw2 실행
+        int rand = UnityEngine.Random.Range(0, animationClipNames.Length);
+        playerAnimator.SetTrigger(animationClipNames[rand]);
+    }
+
+
+
+
+
 
     private void CastKunaiRay(Vector2 startPos, Vector2 direction, int reflectionsLeft)
     {
@@ -264,7 +323,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
             {
                 Debug.Log($"Raycast: NoneStuck 맞음 → 레이캐스트 중단 ({hit.collider.gameObject.name})");
                 return;
-            }else if (hit.collider.CompareTag("LockPlatform"))
+            }
+            else if (hit.collider.CompareTag("LockPlatform"))
             {
                 Debug.Log($"Raycast: 잠긴 플랫폼 맞음 → 레이캐스트 중단 ({hit.collider.gameObject.name})");
                 return;
@@ -301,26 +361,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     }
 
 
-    //private void FinalizeLine()
-    //{
-    //    if (linePoints.Count < 2) return;
 
-    //    // 라인 오브젝트 생성
-    //    GameObject lineObj = Instantiate(warpLinePrefab);
-    //    LineRenderer newLine = lineObj.GetComponent<LineRenderer>();
 
-    //    // 포인트 복사
-    //    newLine.positionCount = linePoints.Count;
-    //    for (int i = 0; i < linePoints.Count; i++)
-    //    {
-    //        newLine.SetPosition(i, linePoints[i]);
-    //    }
-
-    //    // 서서히 사라지게
-    //    StartCoroutine(FadeAndDestroy(lineObj, flashDuration));
-    //}
-
-    
 
     private void FinalizeLine()
     {

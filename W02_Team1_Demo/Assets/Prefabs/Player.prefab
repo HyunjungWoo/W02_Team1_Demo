@@ -95,6 +95,60 @@ MonoBehaviour:
   player: {fileID: 8759391789214341685}
   mainCamera: {fileID: 0}
   explosionPrefab: {fileID: 6584862412185148141, guid: ec3e37b78cf47ae419c63ab62edd79dc, type: 3}
+--- !u!1 &4972452229091091325
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7418791451492691327}
+  - component: {fileID: 50586939222670061}
+  m_Layer: 7
+  m_Name: Animation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7418791451492691327
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4972452229091091325}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5180498809405554286}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &50586939222670061
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4972452229091091325}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: fca083a3f0abe0b4ba49cdca459ad883, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8363759213490870348
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,6 +324,7 @@ Transform:
   m_Children:
   - {fileID: 7732347783410705627}
   - {fileID: 1157613030849596822}
+  - {fileID: 7418791451492691327}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2081280604797216275
@@ -301,6 +356,7 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 845ee75448a941e41b8a072b3f692d3a, type: 3}
   - {fileID: 2800000, guid: ba5183a309381e24b8876bd816b41a69, type: 3}
   frameInterval: 0.1
+  playerAnimator: {fileID: 50586939222670061}
 --- !u!50 &6861478885976935308
 Rigidbody2D:
   serializedVersion: 5
