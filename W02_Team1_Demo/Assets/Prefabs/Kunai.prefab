@@ -390,8 +390,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   borderObject: {fileID: 4947394043565288395}
   isInvincible: 0
-  dragFactor: 0.997
-  minSpeed: 0
+  minSpeed: 30
+  decreaseTime: 0.05
 --- !u!50 &5651282726693479036
 Rigidbody2D:
   serializedVersion: 5
@@ -443,7 +443,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8038f1dfbbd8e644aac8db365752f2a1, type: 2}
+  - {fileID: 2100000, guid: 87dee5d03323e4003a9785eface0284a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

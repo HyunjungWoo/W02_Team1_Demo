@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     #region 쿠나이 관련 변수
     [Header("던지기 설정")]
     public GameObject kunaiPrefab;
-    public float thorwForce = 30f;
+    public float throwForce = 50f;
     public LineRenderer aimLine;
 
     [Header("반동 설정")]
@@ -230,7 +230,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             currentKunai.isInvincible = false;
         }
-        kunaiInstance.GetComponent<Rigidbody2D>().AddForce(throwDirection * thorwForce, ForceMode2D.Impulse);
+        kunaiInstance.GetComponent<Rigidbody2D>().AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
     }
 
     IEnumerator FadeAndDestroy(GameObject lineObj, float duration)
