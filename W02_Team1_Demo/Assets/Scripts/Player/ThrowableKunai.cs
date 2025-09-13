@@ -10,6 +10,11 @@ public class ThrowableKunai : MonoBehaviour
 
     private Vector2 hitNormal = Vector2.zero; //  벽에 꽂힌 방향 저장
 
+    // ⭐ 감속을 위한 변수 추가
+    [Header("쿠나이 감속")]
+    [SerializeField] private float dragFactor = 0.98f; // 매 프레임마다 속도를 98%로 줄임
+    [SerializeField] private float minSpeed = 0.5f; // 이 속도 이하가 되면 멈춤
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -23,12 +28,30 @@ public class ThrowableKunai : MonoBehaviour
     }
     void Update()
     {
-        // --- 스프라이트 방향 회전 ---
-        if (!isStuck && rb.linearVelocity.sqrMagnitude > 0.01f)
+
+        // ⭐ 감속 로직 추가
+        if (rb.linearVelocity.sqrMagnitude > minSpeed * minSpeed)
+        {
+            // 현재 속도에 감속 계수를 곱하여 속도를 줄입니다.
+            rb.linearVelocity *= dragFactor;
+        }
+        else
+        {
+            // 최소 속도 이하가 되면 완전히 멈춥니다.
+            rb.linearVelocity = Vector2.zero;
+        }
+        // ⭐ 속도가 0.01 이상일 때만 회전
+        if (rb.linearVelocity.sqrMagnitude > 0.01f)
         {
             float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
+        //// --- 스프라이트 방향 회전 ---
+        //if (!isStuck && rb.linearVelocity.sqrMagnitude > 0.01f)
+        //{
+        //    float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
+        //    transform.rotation = Quaternion.Euler(0, 0, angle);
+        //}
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
