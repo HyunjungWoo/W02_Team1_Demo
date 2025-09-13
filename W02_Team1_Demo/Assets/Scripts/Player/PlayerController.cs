@@ -231,6 +231,11 @@ private void Start()
             }
 
         }
+        else
+        {
+            // 벽 보정
+            warpPosition = CheckWallInner(warpPosition);
+        }
         // 반동 효과
         if (rb != null)
         {
@@ -238,8 +243,7 @@ private void Start()
             rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
         }
 
-        // 벽 보정
-        warpPosition = CheckWallInner(warpPosition);
+        
 
         Destroy(currentKunai.gameObject); // 워프 후 쿠나이는 파괴
         transform.position = warpPosition;
