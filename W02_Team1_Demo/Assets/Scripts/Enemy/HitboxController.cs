@@ -25,14 +25,15 @@ public class HitboxController : MonoBehaviour
 
     private void Awake()
     {
-        // 인스턴스가 이미 존재하면 새로 생성된 오브젝트를 파괴합니다.
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this.gameObject);
-            return;
-        }
+        //// 인스턴스가 이미 존재하면 새로 생성된 오브젝트를 파괴합니다.
+        //if (Instance != null && Instance != this)
+        //{
+        //    Debug.Log("asdasd");
+        //    Destroy(this.gameObject);
+        //    return;
+        //}
 
-        // 이 스크립트의 인스턴스를 Instance 변수에 할당합니다.
+        //// 이 스크립트의 인스턴스를 Instance 변수에 할당합니다.
         Instance = this;
     }
     void Start()

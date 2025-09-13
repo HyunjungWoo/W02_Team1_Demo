@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 6661248650375631461}
   - component: {fileID: 8559199805695712912}
   - component: {fileID: 4334417889014578241}
+  - component: {fileID: 4339204878959252241}
   m_Layer: 0
   m_Name: FlyRangeEnemy
   m_TagString: Untagged
@@ -305,6 +306,7 @@ MonoBehaviour:
   ranged: {fileID: 4334417889014578241}
   chaseStart: 9
   chaseStop: 15
+  attackPrepareDuration: 1
   waitAfterAttack: 0.3
 --- !u!114 &8559199805695712912
 MonoBehaviour:
@@ -336,3 +338,16 @@ MonoBehaviour:
   projectilePrefab: {fileID: 7967278627788180229, guid: 963bc8af6f7a5e74d8e92796eee78e34, type: 3}
   cooldown: 2
   range: 20
+--- !u!114 &4339204878959252241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5955575441200267534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaf6ac5098e37cb4d8dd428597d67517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10

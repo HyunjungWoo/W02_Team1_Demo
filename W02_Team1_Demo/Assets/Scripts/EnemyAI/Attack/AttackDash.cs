@@ -51,4 +51,18 @@ public class AttackDash : MonoBehaviour
         yield return new WaitForSeconds(cooldown);
         onCooldown = false;
     }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        int damage = 10;
+
+        // 충돌한 상대가 HealthSystem 부품을 가지고 있는지 확인
+        HealthSystem targetHealth = other.GetComponent<HealthSystem>();
+
+        // 가지고 있다면 (플레이어든, 다른 적이든, 부서지는 상자든) 데미지를 줌
+        if (targetHealth != null)
+        {
+            targetHealth.TakeDamage(damage);
+        }
+    }
 }
