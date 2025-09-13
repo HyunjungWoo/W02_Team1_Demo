@@ -55,9 +55,10 @@ public class ScriptableStats : ScriptableObject
     public float JumpBuffer = .2f;
 
     [Header("DASH")]
-    public float DashPower      = 50f; // 대시 속도
-    public float DashDuration   = 0.2f; // 대시 지속 시간
-    public float DashCooldown   = 1f; // 대시 쿨타임
+    public float DashPower      = 100f; // 대시 속도
+    public float DashDuration   = 0.1f; // 대시 지속 시간
+    public float DashCooldown   = 0.5f; // 대시 쿨타임
+    public float DashDrag = 0.7f; // 대시 감속 계수
 
     [Header("WALLS")]
     public LayerMask WallLayer; // 벽 레이어

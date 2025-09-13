@@ -463,6 +463,7 @@ private void Start()
 
         if(isDashing)
         {
+            frameVelocity *= stats.DashDrag; // 대시 감속 적용
             dashTimeLeft -= Time.fixedDeltaTime;
 
             if (dashTimeLeft <= 0)
