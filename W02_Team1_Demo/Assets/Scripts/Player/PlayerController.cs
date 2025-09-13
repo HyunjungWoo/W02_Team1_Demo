@@ -209,6 +209,15 @@ private void Start()
 
         GameObject kunaiInstance = Instantiate(kunaiPrefab, playerPosition, rotation);
         currentKunai = kunaiInstance.GetComponent<ThrowableKunai>();
+        Vector2 aimDirection = (mousePosition - playerPosition).normalized;
+        if(aimDirection.x < 0 && onLeftWall)
+        {
+            currentKunai.isInvincible = false;
+        }
+        else if (aimDirection.x > 0 && onRightWall)
+        {
+            currentKunai.isInvincible = false;
+        }
         kunaiInstance.GetComponent<Rigidbody2D>().AddForce(throwDirection * thorwForce, ForceMode2D.Impulse);
     }
 

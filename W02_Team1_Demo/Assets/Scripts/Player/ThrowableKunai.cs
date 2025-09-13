@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class ThrowableKunai : MonoBehaviour
@@ -5,14 +6,21 @@ public class ThrowableKunai : MonoBehaviour
     private Rigidbody2D rb;
     private bool isStuck = false;
     public GameObject borderObject;
+    public bool isInvincible = false; // 무적 상태 여부
 
     private Vector2 hitNormal = Vector2.zero; //  벽에 꽂힌 방향 저장
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        StartCoroutine(BecomeVulnerableAfterDelay(0.02f));
     }
-
+    private IEnumerator BecomeVulnerableAfterDelay(float delay)
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(delay); // 0.1초 대기
+        isInvincible = false;
+    }
     void Update()
     {
         // --- 스프라이트 방향 회전 ---
@@ -25,6 +33,7 @@ public class ThrowableKunai : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (isInvincible) return;
         if (borderObject != null)
         {
             borderObject.SetActive(true);
