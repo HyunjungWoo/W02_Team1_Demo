@@ -29,8 +29,8 @@ public class PlayerAnimator : MonoBehaviour
 
     private IPlayerController player;
     private bool grounded;
-    private ParticleSystem.MinMaxGradient  currentGradient; 
-
+    private ParticleSystem.MinMaxGradient  currentGradient;
+    private bool isWarping = false;
 
     private void Awake()
     {
@@ -42,6 +42,7 @@ public class PlayerAnimator : MonoBehaviour
     {
         player.Jumped += OnJumped; // 이건 점프할 때
         player.GroundedChanged += OnGroundedChanged;  // 이건 착지할 때
+        player.Warping += OnWarping;
 
         moveParticles.Play();
     }
@@ -50,8 +51,21 @@ public class PlayerAnimator : MonoBehaviour
     {
         player.Jumped -= OnJumped;
         player.GroundedChanged -= OnGroundedChanged;
+        player.Warping -= OnWarping;
 
         moveParticles.Stop();
+    }
+    private void OnWarping(bool warping)
+    {
+        isWarping = warping;
+        if (isWarping)
+        {
+            moveParticles.Stop();
+        }
+        else if (grounded)
+        {
+            moveParticles.Play();
+        }
     }
 
     private void Update()
@@ -94,7 +108,9 @@ public class PlayerAnimator : MonoBehaviour
 
     private void OnGroundedChanged(bool grounded_, float impact)
     {
-         grounded = grounded_;
+        if(isWarping) return;
+
+        grounded = grounded_;
 
         if (grounded)
         {

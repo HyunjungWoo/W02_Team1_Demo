@@ -81,6 +81,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private bool CanUseWallCoyote => !grounded && time <= frameLeftWall + stats.WallCoyoteTime;
     public event Action<bool, float> GroundedChanged;
     public event Action Jumped;
+    public event Action<bool> Warping;
     #endregion
 
     #region 슬로우 모션 변수
@@ -528,6 +529,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
     private void WarpToKunai()
     {
+        Warping?.Invoke(true);
         CreateLineObject();
         SpawnFlashSequence();
         Vector3 warpPosition = currentKunai.transform.position;
@@ -570,7 +572,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
                 frameVelocity = launchDirection.normalized * stats.EnemyKillLaunchPower;
             }
             StartSlowMotionEffect();
-
+            Warping?.Invoke(false);
         }
         else
         {
@@ -960,5 +962,6 @@ public interface IPlayerController
 {
     public event Action<bool, float> GroundedChanged;
     public event Action Jumped;
+    public event Action<bool> Warping; 
     public Vector2 FrameInput { get; }
 }
