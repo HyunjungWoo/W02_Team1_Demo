@@ -87,7 +87,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private float slowdownFactor = 0.3f; // 얼마나 느려지게 할지 (0.05 = 5%)
     private float slowdownLength = 1f;   // 슬로우 모션 지속 시간 (초)
     Coroutine slowMotionCoroutine;
-
+    private float warpSlowdownFactor = 0.3f; // 얼마나 느려지게 할지 (0.05 = 5%)
+    private float warpSlowdownLength = 1f;   // 슬로우 모션 지속 시간 (초)
+    Coroutine warpSlowMotionCoroutine;
     #endregion
 
     #region 애니메이션 변수
@@ -511,7 +513,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             float groundCheckRadius = 0.2f;
             bool isGroundedAfterWarp = Physics2D.OverlapCircle(playerGround.position, groundCheckRadius, stats.WallLayer);
 
-            if(!isGroundedAfterWarp) StartSlowMotionEffect();
+            if(!isGroundedAfterWarp) StartWarpSlowMotionEffect();
         }
 
 
@@ -541,6 +543,34 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // 2. FixedUpdate의 호출 주기도 시간에 맞춰 느려지므로, 이를 보정해줍니다.
         Time.fixedDeltaTime = Time.timeScale * 0.02f;
         yield return new WaitForSecondsRealtime(slowdownLength);
+
+        // --- 효과 종료 ---
+        // 1. 시간을 원래 속도로 되돌립니다.
+        Time.timeScale = 1f;
+        // 2. FixedUpdate 시간도 원래대로 복구합니다.
+        Time.fixedDeltaTime = 0.02f;
+
+    }
+
+    public void StartWarpSlowMotionEffect()
+    {
+        // 기존 코루틴이 돌고 있다면 중단
+        if (warpSlowMotionCoroutine != null)
+        {
+            StopCoroutine(warpSlowMotionCoroutine);
+        }
+
+        // 새로운 코루틴 시작
+        warpSlowMotionCoroutine = StartCoroutine(WarpSlowMotionCoroutine());
+    }
+    private IEnumerator WarpSlowMotionCoroutine()
+    {
+        // --- 효과 시작 ---
+        // 1. 시간을 느리게 만듭니다.
+        Time.timeScale = warpSlowdownFactor;
+        // 2. FixedUpdate의 호출 주기도 시간에 맞춰 느려지므로, 이를 보정해줍니다.
+        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+        yield return new WaitForSecondsRealtime(warpSlowdownLength);
 
         // --- 효과 종료 ---
         // 1. 시간을 원래 속도로 되돌립니다.
