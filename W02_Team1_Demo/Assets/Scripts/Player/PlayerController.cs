@@ -100,6 +100,15 @@ public class PlayerController : MonoBehaviour, IPlayerController
     String[] animationClipNames = { "isThrow1", "isThrow2" };
     Animator playerThrowAnimator;
 
+    // [Dash sprite sequence]
+    [SerializeField] private SpriteRenderer visualRenderer; // 캐릭터 스프라이트
+    [SerializeField] private Sprite[] dashFrames;           // 5장 넣기 (Multiple sliced)
+    [SerializeField] private float dashFrameInterval = 0.04f; // 프레임 간격(초)
+    [SerializeField] private int dashOrderOffset = 1;      // 캐릭터 뒤에 그리려면 -1
+
+    
+
+
 
 
 
@@ -727,6 +736,29 @@ public class PlayerController : MonoBehaviour, IPlayerController
         }
     }
 
+    private void SpawnDashSequence()
+    {
+        if (dashFrames == null || dashFrames.Length == 0) return;
+        if (visualRenderer == null) visualRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (visualRenderer == null) return;
+
+        var go = new GameObject("DashSequence");
+        go.transform.position = transform.position;                // 대쉬 시작 위치
+        go.transform.rotation = Quaternion.identity;
+        go.transform.localScale = visualRenderer.transform.lossyScale;
+
+        var sr = go.AddComponent<SpriteRenderer>();
+        sr.sortingLayerID = visualRenderer.sortingLayerID;
+        sr.sortingOrder = visualRenderer.sortingOrder + dashOrderOffset;
+        sr.flipX = visualRenderer.flipX;                           // 방향 맞춤
+        sr.flipY = visualRenderer.flipY;
+
+        var seq = go.AddComponent<OneShotSpriteSequence>();
+        // 일정한 속도로 재생하려면 useUnscaledTime = true 로
+        seq.Play(dashFrames, dashFrameInterval, useUnscaledTime: false);
+    }
+
+
     private void HandleDash()
     {
         // 대쉬 시작 조건 확인
@@ -749,6 +781,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
             dashTimeLeft = stats.DashDuration;
             frameVelocity = dashDirection.normalized * stats.DashPower; // 대시 속도 설정
             dashCooldownTimer = stats.DashCooldown; // 쿨타임 초기화
+
+            // 대쉬 효과
+            SpawnDashSequence();
         }
 
         if (isDashing)
