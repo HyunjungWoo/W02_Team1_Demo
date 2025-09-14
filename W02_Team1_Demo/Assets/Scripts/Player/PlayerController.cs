@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     #region 쿠나이 관련 변수
     [Header("던지기 설정")]
     public GameObject kunaiPrefab;
-    public Transform  playerGround;
+    public Transform playerGround;
 
     public LineRenderer aimLine;
 
@@ -96,12 +96,13 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [Header("애니메이션 관련 효과")]
     [SerializeField] GameObject playerAnimation;
 
+
     String[] animationClipNames = { "isThrow1", "isThrow2" };
-    Animator playerAnimator;
+    Animator playerThrowAnimator;
 
-    ParticleSystem dustParticle;
 
- 
+
+
 
 
     #endregion
@@ -111,7 +112,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Tarodev의 Awake() 내용: 필수 컴포넌트 초기화
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
-        playerAnimator = playerAnimation.GetComponent<Animator>();
+        playerThrowAnimator = playerAnimation.GetComponent<Animator>();
+
         cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
     }
 
@@ -132,6 +134,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             Debug.LogError("superHeroLandingCheckBox가 연결되지 않았습니다!");
         }
+
+
     }
 
     private void Update()
@@ -153,6 +157,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         HandleDash();
         HandleDirection();
         HandleGravity();
+
         ApplyMovement();
     }
 
@@ -298,7 +303,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         // 50% 확률로 throw1, throw2 실행
         int rand = UnityEngine.Random.Range(0, animationClipNames.Length);
-        playerAnimator.SetTrigger(animationClipNames[rand]);
+        playerThrowAnimator.SetTrigger(animationClipNames[rand]);
     }
 
 
@@ -517,7 +522,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             float groundCheckRadius = 0.2f;
             bool isGroundedAfterWarp = Physics2D.OverlapCircle(playerGround.position, groundCheckRadius, stats.WallLayer);
 
-            if(!isGroundedAfterWarp) StartWarpSlowMotionEffect();
+            if (!isGroundedAfterWarp) StartWarpSlowMotionEffect();
         }
 
 
@@ -648,12 +653,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
             bufferedJumpUsable = true;
             endedJumpEarly = false;
             GroundedChanged?.Invoke(true, Mathf.Abs(frameVelocity.y));
+
         }
         else if (grounded && !groundHit)
         {
             grounded = false;
             frameLeftGrounded = time;
             GroundedChanged?.Invoke(false, 0);
+
         }
 
         // 벽 충돌 검사
@@ -726,6 +733,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (frameInput.DashDown && dashCooldownTimer <= 0 && !isDashing)
         {
             Vector2 dashDirection;
+
+
 
             if (frameInput.Move.x != 0) // 좌우 입력이 있을 때 
             {
@@ -836,6 +845,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
             frameVelocity.y = Mathf.MoveTowards(frameVelocity.y, -stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
         }
     }
+
+
+
+
 
     private void ApplyMovement() => rb.linearVelocity = frameVelocity;
 
