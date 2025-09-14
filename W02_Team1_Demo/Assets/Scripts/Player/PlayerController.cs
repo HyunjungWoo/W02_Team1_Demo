@@ -73,6 +73,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     // 궤적 포인트 기록용
     private List<Vector3> linePoints = new List<Vector3>();
 
+
     #endregion
 
     #region 인터페이스 구현
@@ -352,6 +353,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
                 GameObject kunaiInstance = Instantiate(kunaiPrefab, hit.point - hit.normal * 0.05f, rotation);
                 currentKunai = kunaiInstance.GetComponent<ThrowableKunai>();
                 currentKunai.OnHit(hit, direction);
+                
 
                 return; // 여기서 종료
             }
@@ -517,7 +519,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
         }
 
 
-
+        // 쿠나이가 비활성화될 때, UI 매니저에게 추적을 멈추도록 알립니다.
+        if (KunaiDirectionIndicator.Instance != null)
+        {
+            KunaiDirectionIndicator.Instance.SetTarget(null);
+        }
         Destroy(currentKunai.gameObject); // 워프 후 쿠나이는 파괴
         currentKunai = null;
     }

@@ -18,6 +18,8 @@ public class ThrowableKunai : MonoBehaviour
     // 쿠나이가 박혔을때 애니메이션 추가
     [Header("쿠나이 애니메이션")]
     [SerializeField] Animator animator;
+    [SerializeField] private KunaiDirectionIndicator kunaiIndicator;
+
 
     private void Awake()
     {
@@ -133,6 +135,12 @@ public class ThrowableKunai : MonoBehaviour
         {
             hitNormal = hit.normal;
             GetComponent<TrailRenderer>().enabled = false;
+        }
+
+        // 쿠나이가 활성화될 때, UI 매니저에게 자신을 추적하도록 요청합니다.
+        if (KunaiDirectionIndicator.Instance != null)
+        {
+            KunaiDirectionIndicator.Instance.SetTarget(this.transform);
         }
     }
 
