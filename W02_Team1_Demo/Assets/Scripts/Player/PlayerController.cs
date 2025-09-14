@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     #region 쿠나이 관련 변수
     [Header("던지기 설정")]
     public GameObject kunaiPrefab;
+    public Transform  playerGround;
 
     public LineRenderer aimLine;
 
@@ -494,13 +495,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
                 // 3. 계산된 방향으로 'EnemyKillLaunchPower' 만큼의 속도를 부여합니다.
                 frameVelocity = launchDirection.normalized * stats.EnemyKillLaunchPower;
-                //// 기존 속도를 0으로 초기화하여 힘이 더 깔끔하게 들어가도록 합니다.
-                //rb.linearVelocity = Vector2.zero;
-                //// 위쪽으로 튀어 오르는 힘을 줍니다.
-                //rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
-                //rb.AddForce(Vector2.right * selfForce, ForceMode2D.Impulse);
-
-
             }
             StartSlowMotionEffect();
 
@@ -514,14 +508,11 @@ public class PlayerController : MonoBehaviour, IPlayerController
             warpPosition = CheckWallInner(warpPosition);
             transform.position = warpPosition;
 
-        }
-        // 반동 효과
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector2.zero;
-            rb.AddForce(Vector2.up * selfForce, ForceMode2D.Impulse);
-        }
+            float groundCheckRadius = 0.2f;
+            bool isGroundedAfterWarp = Physics2D.OverlapCircle(playerGround.position, groundCheckRadius, stats.WallLayer);
 
+            if(!isGroundedAfterWarp) StartSlowMotionEffect();
+        }
 
 
 

@@ -205,6 +205,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &5283990312495540382
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7626264912571486046}
+  m_Layer: 7
+  m_Name: playerGround
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7626264912571486046
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5283990312495540382}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.97, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5180498809405554286}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8363759213490870348
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,6 +412,7 @@ Transform:
   - {fileID: 7732347783410705627}
   - {fileID: 1157613030849596822}
   - {fileID: 7418791451492691327}
+  - {fileID: 7626264912571486046}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2081280604797216275
@@ -397,6 +429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stats: {fileID: 11400000, guid: 05e6a06c5af93134ab98ff12e2c27265, type: 2}
   kunaiPrefab: {fileID: 4995944801069903025, guid: 46004ec8c5ea0ad458239342fcd819de, type: 3}
+  playerGround: {fileID: 7626264912571486046}
   aimLine: {fileID: 8880927873227072472}
   selfForce: 2
   superHeroLandingCheckBox: {fileID: 80109342349426505}
