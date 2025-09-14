@@ -95,6 +95,38 @@ MonoBehaviour:
   player: {fileID: 8759391789214341685}
   mainCamera: {fileID: 0}
   explosionPrefab: {fileID: 6584862412185148141, guid: ec3e37b78cf47ae419c63ab62edd79dc, type: 3}
+--- !u!1 &880453670202277080
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6775474172182559268}
+  m_Layer: 7
+  m_Name: Animation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6775474172182559268
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 880453670202277080}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7418791451492691327}
+  m_Father: {fileID: 5180498809405554286}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4972452229091091325
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,7 +139,7 @@ GameObject:
   - component: {fileID: 50586939222670061}
   - component: {fileID: 8280606136627563965}
   m_Layer: 7
-  m_Name: Animation
+  m_Name: Throw anime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -121,12 +153,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4972452229091091325}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.3, y: 1.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5180498809405554286}
+  m_Father: {fileID: 6775474172182559268}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &50586939222670061
 Animator:
@@ -199,7 +231,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 3, y: 3}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -411,8 +443,8 @@ Transform:
   m_Children:
   - {fileID: 7732347783410705627}
   - {fileID: 1157613030849596822}
-  - {fileID: 7418791451492691327}
   - {fileID: 7626264912571486046}
+  - {fileID: 6775474172182559268}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2081280604797216275
@@ -446,6 +478,15 @@ MonoBehaviour:
   - {fileID: 2800000, guid: ba5183a309381e24b8876bd816b41a69, type: 3}
   frameInterval: 0.1
   playerAnimation: {fileID: 4972452229091091325}
+  visualRenderer: {fileID: 5524559016688831797}
+  dashFrames:
+  - {fileID: 6355788280487977581, guid: a97b8ad2b86180e45900519c6edc74ef, type: 3}
+  - {fileID: 4325617605298578283, guid: a97b8ad2b86180e45900519c6edc74ef, type: 3}
+  - {fileID: 4165425030728305268, guid: a97b8ad2b86180e45900519c6edc74ef, type: 3}
+  - {fileID: 8689760959001175554, guid: a97b8ad2b86180e45900519c6edc74ef, type: 3}
+  - {fileID: 1995187952430404577, guid: a97b8ad2b86180e45900519c6edc74ef, type: 3}
+  dashFrameInterval: 0.08
+  dashOrderOffset: 1
 --- !u!50 &6861478885976935308
 Rigidbody2D:
   serializedVersion: 5

@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     #region 쿠나이 관련 변수
     [Header("던지기 설정")]
     public GameObject kunaiPrefab;
-    public Transform  playerGround;
+    public Transform playerGround;
 
     public LineRenderer aimLine;
 
@@ -97,8 +97,22 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [Header("애니메이션 관련 효과")]
     [SerializeField] GameObject playerAnimation;
 
+
     String[] animationClipNames = { "isThrow1", "isThrow2" };
-    Animator playerAnimator;
+    Animator playerThrowAnimator;
+
+    // [Dash sprite sequence]
+    [SerializeField] private SpriteRenderer visualRenderer; // 캐릭터 스프라이트
+    [SerializeField] private Sprite[] dashFrames;           // 5장 넣기 (Multiple sliced)
+    [SerializeField] private float dashFrameInterval = 0.04f; // 프레임 간격(초)
+    [SerializeField] private int dashOrderOffset = 1;      // 캐릭터 뒤에 그리려면 -1
+
+    
+
+
+
+
+
 
 
     #endregion
@@ -108,7 +122,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Tarodev의 Awake() 내용: 필수 컴포넌트 초기화
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
-        playerAnimator = playerAnimation.GetComponent<Animator>();
+        playerThrowAnimator = playerAnimation.GetComponent<Animator>();
+
         cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
     }
 
@@ -129,6 +144,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             Debug.LogError("superHeroLandingCheckBox가 연결되지 않았습니다!");
         }
+
+
     }
 
     private void Update()
@@ -150,6 +167,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         HandleDash();
         HandleDirection();
         HandleGravity();
+
         ApplyMovement();
     }
 
@@ -295,7 +313,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         // 50% 확률로 throw1, throw2 실행
         int rand = UnityEngine.Random.Range(0, animationClipNames.Length);
-        playerAnimator.SetTrigger(animationClipNames[rand]);
+        playerThrowAnimator.SetTrigger(animationClipNames[rand]);
     }
 
 
@@ -515,7 +533,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
             float groundCheckRadius = 0.2f;
             bool isGroundedAfterWarp = Physics2D.OverlapCircle(playerGround.position, groundCheckRadius, stats.WallLayer);
 
-            if(!isGroundedAfterWarp) StartWarpSlowMotionEffect();
+            if (!isGroundedAfterWarp) StartWarpSlowMotionEffect();
         }
 
 
@@ -650,12 +668,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
             bufferedJumpUsable = true;
             endedJumpEarly = false;
             GroundedChanged?.Invoke(true, Mathf.Abs(frameVelocity.y));
+
         }
         else if (grounded && !groundHit)
         {
             grounded = false;
             frameLeftGrounded = time;
             GroundedChanged?.Invoke(false, 0);
+
         }
 
         // 벽 충돌 검사
@@ -722,12 +742,37 @@ public class PlayerController : MonoBehaviour, IPlayerController
         }
     }
 
+    private void SpawnDashSequence()
+    {
+        if (dashFrames == null || dashFrames.Length == 0) return;
+        if (visualRenderer == null) visualRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (visualRenderer == null) return;
+
+        var go = new GameObject("DashSequence");
+        go.transform.position = transform.position;                // 대쉬 시작 위치
+        go.transform.rotation = Quaternion.identity;
+        go.transform.localScale = visualRenderer.transform.lossyScale;
+
+        var sr = go.AddComponent<SpriteRenderer>();
+        sr.sortingLayerID = visualRenderer.sortingLayerID;
+        sr.sortingOrder = visualRenderer.sortingOrder + dashOrderOffset;
+        sr.flipX = visualRenderer.flipX;                           // 방향 맞춤
+        sr.flipY = visualRenderer.flipY;
+
+        var seq = go.AddComponent<OneShotSpriteSequence>();
+        // 일정한 속도로 재생하려면 useUnscaledTime = true 로
+        seq.Play(dashFrames, dashFrameInterval, useUnscaledTime: false);
+    }
+
+
     private void HandleDash()
     {
         // 대쉬 시작 조건 확인
         if (frameInput.DashDown && dashCooldownTimer <= 0 && !isDashing)
         {
             Vector2 dashDirection;
+
+
 
             if (frameInput.Move.x != 0) // 좌우 입력이 있을 때 
             {
@@ -742,6 +787,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
             dashTimeLeft = stats.DashDuration;
             frameVelocity = dashDirection.normalized * stats.DashPower; // 대시 속도 설정
             dashCooldownTimer = stats.DashCooldown; // 쿨타임 초기화
+
+            // 대쉬 효과
+            SpawnDashSequence();
         }
 
         if (isDashing)
@@ -838,6 +886,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
             frameVelocity.y = Mathf.MoveTowards(frameVelocity.y, -stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
         }
     }
+
+
+
+
 
     private void ApplyMovement() => rb.linearVelocity = frameVelocity;
 
