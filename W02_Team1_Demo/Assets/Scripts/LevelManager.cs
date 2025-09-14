@@ -7,7 +7,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private Transform keySpawnPosition;
 
     // 인스펙터에 4마리의 특정 몬스터들을 직접 할당
-    [SerializeField] private Enemy[] specificEnemies;
+    [SerializeField] private EnemyWithKey[] specificEnemies;
 
     // 죽은 몬스터 수를 추적
     private int deadEnemyCount = 0;
@@ -15,12 +15,12 @@ public class LevelManager : MonoBehaviour
     void Awake()
     {
         // 몬스터들이 LevelManager를 참조하도록 연결
-        foreach (Enemy enemy in specificEnemies)
+        foreach (EnemyWithKey enemy in specificEnemies)
         {
             if (enemy != null)
             {
-                // Enemy 스크립트의 levelManager 변수에 자기 자신을 할당
-                // 이 부분을 Enemy 스크립트에 public 변수로 만들거나 SetManager() 함수를 만들어서 연결하면 됩니다.
+                // EnemyWithKey 스크립트의 levelManager 변수에 자기 자신을 할당
+                // 이 부분을 EnemyWithKey 스크립트에 public 변수로 만들거나 SetManager() 함수를 만들어서 연결하면 됩니다.
             }
         }
     }
