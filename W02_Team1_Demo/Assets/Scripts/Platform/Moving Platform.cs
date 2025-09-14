@@ -5,9 +5,16 @@ enum DirectionType
     Vertical, Horizontal
 }
 
+enum PositiveNagative
+{
+    Positive,
+    Negative
+}
+
 public class MovingPlatform : Platform
 {
     [SerializeField] DirectionType direction;
+    [SerializeField] PositiveNagative type;
     [SerializeField] float platformSpeed = 2f;   // 이동 속도
     [SerializeField] float platformRange = 3f;   // 이동 거리 (왕복 기준)
 
@@ -15,13 +22,15 @@ public class MovingPlatform : Platform
     private Vector2 startPos;
     private Vector2 lastPosition;
 
-    private ThrowableKunai stuckKunai;
+    int dirType;
+    
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         startPos = rb.position;
         lastPosition = rb.position;
+        dirType = type == PositiveNagative.Positive ? 1 : -1;
     }
 
     private void FixedUpdate()
@@ -45,11 +54,11 @@ public class MovingPlatform : Platform
 
         if (direction == DirectionType.Horizontal)
         {
-            pos.x += offset;
+            pos.x += (offset * dirType);
         }
         else if (direction == DirectionType.Vertical)
         {
-            pos.y += offset;
+            pos.y += (offset * dirType);
         }
 
         
@@ -82,7 +91,7 @@ public class MovingPlatform : Platform
 
     public void SetKunaiTransform(ThrowableKunai kunai, Vector3 worldPos, Vector2 worldNormal)
     {
-        stuckKunai = kunai;
+        
         kunai.transform.SetParent(this.transform, true);
         kunai.transform.position = worldPos;
 
