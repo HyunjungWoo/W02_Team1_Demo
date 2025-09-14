@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class NewMonoBehaviourScript : MonoBehaviour
+public class EnemyWithKey : MonoBehaviour
 {
     // 이 몬스터를 관리하는 LevelManager에 대한 참조
     [SerializeField] private LevelManager levelManager;
