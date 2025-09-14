@@ -71,7 +71,7 @@ public class ThrowableKunai : MonoBehaviour
 
     void Update()
     {
-        // ⭐ 속도가 0.01 이상일 때만 회전
+        //  속도가 0.01 이상일 때만 회전
         if (rb.linearVelocity.sqrMagnitude > 0.01f)
         {
             float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
@@ -86,7 +86,7 @@ public class ThrowableKunai : MonoBehaviour
         if (isStuck) return;
         isStuck = true;
 
-        Debug.Log("123");
+        
         // STUCK ANIMATION
         animator.SetTrigger("isStuck");
 
