@@ -99,6 +99,10 @@ public class PlayerController : MonoBehaviour, IPlayerController
     String[] animationClipNames = { "isThrow1", "isThrow2" };
     Animator playerAnimator;
 
+    ParticleSystem dustParticle;
+
+ 
+
 
     #endregion
 
