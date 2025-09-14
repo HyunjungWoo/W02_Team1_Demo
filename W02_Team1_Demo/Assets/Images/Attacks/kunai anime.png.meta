@@ -1,0 +1,409 @@
+fileFormatVersion: 2
+guid: a97b8ad2b86180e45900519c6edc74ef
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6355788280487977581
+    second: kunai anime_0
+  - first:
+      213: 4325617605298578283
+    second: kunai anime_1
+  - first:
+      213: 4165425030728305268
+    second: kunai anime_2
+  - first:
+      213: 8689760959001175554
+    second: kunai anime_3
+  - first:
+      213: 1995187952430404577
+    second: kunai anime_4
+  - first:
+      213: 5241302870612803597
+    second: kunai anime_5
+  - first:
+      213: 21081119416571551
+    second: kunai anime_6
+  - first:
+      213: -6714727104703531593
+    second: kunai anime_7
+  - first:
+      213: 3831969558604467995
+    second: kunai anime_8
+  - first:
+      213: 5220443712998200328
+    second: kunai anime_9
+  - first:
+      213: -5965082069281040607
+    second: kunai anime_10
+  - first:
+      213: 3249546726960292454
+    second: kunai anime_11
+  - first:
+      213: -3857448397479057681
+    second: kunai anime_12
+  - first:
+      213: -3649328501062588646
+    second: kunai anime_13
+  - first:
+      213: -3555013191611011048
+    second: kunai anime_14
+  - first:
+      213: 6379225146472439461
+    second: kunai anime_15
+  - first:
+      213: 840444780027230353
+    second: kunai anime_16
+  - first:
+      213: 6976991984076902140
+    second: kunai anime_17
+  - first:
+      213: 2097366782498213801
+    second: kunai anime_18
+  - first:
+      213: -2629970016687915766
+    second: kunai anime_19
+  - first:
+      213: -3336103380520087009
+    second: kunai anime_20
+  - first:
+      213: 7808650552962852009
+    second: kunai anime_21
+  - first:
+      213: -1293315659519434306
+    second: kunai anime_22
+  - first:
+      213: -6818736207145589843
+    second: kunai anime_23
+  - first:
+      213: -3491471607258551205
+    second: kunai anime_24
+  - first:
+      213: -9108437542925856630
+    second: kunai anime_25
+  - first:
+      213: -2901893274321701963
+    second: kunai anime_26
+  - first:
+      213: 1669591945837570268
+    second: kunai anime_27
+  - first:
+      213: 5896347045839574401
+    second: kunai anime_28
+  - first:
+      213: -4950760904569451454
+    second: kunai anime_29
+  - first:
+      213: 1135721929990757140
+    second: kunai anime_30
+  - first:
+      213: -2787454061439563196
+    second: kunai anime_31
+  - first:
+      213: -2396447670043737008
+    second: kunai anime_32
+  - first:
+      213: -2645207340127191188
+    second: kunai anime_33
+  - first:
+      213: -61400066345124147
+    second: kunai anime_34
+  - first:
+      213: 6993424423024596615
+    second: kunai anime_35
+  - first:
+      213: -5647888921461862243
+    second: kunai anime_36
+  - first:
+      213: -5952864803900849128
+    second: kunai anime_37
+  - first:
+      213: -5733530812468018593
+    second: kunai anime_38
+  - first:
+      213: -2925489677687691112
+    second: kunai anime_39
+  - first:
+      213: -7392599609895419136
+    second: kunai anime_40
+  - first:
+      213: -3150668530631122628
+    second: kunai anime_41
+  - first:
+      213: 8713187143426513662
+    second: kunai anime_42
+  - first:
+      213: -2071428754402178854
+    second: kunai anime_43
+  - first:
+      213: 5259960253578582605
+    second: kunai anime_44
+  - first:
+      213: 16844779204828347
+    second: kunai anime_45
+  - first:
+      213: 2734822150976065902
+    second: kunai anime_46
+  - first:
+      213: 8455846171450529142
+    second: kunai anime_47
+  - first:
+      213: -5436090825573290324
+    second: kunai anime_48
+  - first:
+      213: -5242470356684348767
+    second: kunai anime_49
+  - first:
+      213: -3190496798901758440
+    second: kunai anime_50
+  - first:
+      213: -429769424818208151
+    second: kunai anime_51
+  - first:
+      213: 2181126103963642110
+    second: kunai anime_52
+  - first:
+      213: -3570743304873429054
+    second: kunai anime_53
+  - first:
+      213: 2150867177115058333
+    second: kunai anime_54
+  - first:
+      213: -7119058821067438321
+    second: kunai anime_55
+  - first:
+      213: -1770751177845376151
+    second: kunai anime_56
+  - first:
+      213: -5576592520040491005
+    second: kunai anime_57
+  - first:
+      213: -157074377859194743
+    second: kunai anime_58
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: kunai anime_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d62a31644cb443850800000000000000
+      internalID: 6355788280487977581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kunai anime_1
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 0
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b636ffd3b4ea70c30800000000000000
+      internalID: 4325617605298578283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kunai anime_2
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 0
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47ac41ffeff8ec930800000000000000
+      internalID: 4165425030728305268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kunai anime_3
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 0
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 206a2584d8b389870800000000000000
+      internalID: 8689760959001175554
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: kunai anime_4
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 0
+        width: 200
+        height: 200
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e3d0cc2fd450bb10800000000000000
+      internalID: 1995187952430404577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 31f80d07612db5b4bb5786fb0cf14c1c
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      kunai anime_0: 6355788280487977581
+      kunai anime_1: 4325617605298578283
+      kunai anime_2: 4165425030728305268
+      kunai anime_3: 8689760959001175554
+      kunai anime_4: 1995187952430404577
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

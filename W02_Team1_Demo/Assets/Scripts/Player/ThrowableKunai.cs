@@ -10,14 +10,18 @@ public class ThrowableKunai : MonoBehaviour
 
     private Vector2 hitNormal = Vector2.zero; //  벽에 꽂힌 방향 저장
 
-    // ⭐ 감속을 위한 변수 추가
+    // 감속을 위한 변수 추가
     [Header("쿠나이 감속")]
     [SerializeField] private float minSpeed = 30.0f;
     [SerializeField] float decreaseTime = 1.0f;
 
+    // 쿠나이가 박혔을때 애니메이션 추가
+    [Header("쿠나이 애니메이션")]
+    [SerializeField] Animator animator;
+
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();        
         StartCoroutine(BecomeVulnerableAfterDelay(0.02f));
     }
 
@@ -81,6 +85,10 @@ public class ThrowableKunai : MonoBehaviour
     {
         if (isStuck) return;
         isStuck = true;
+
+        Debug.Log("123");
+        // STUCK ANIMATION
+        animator.SetTrigger("isStuck");
 
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.linearVelocity = Vector2.zero;
