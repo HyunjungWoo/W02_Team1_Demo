@@ -487,6 +487,24 @@ MonoBehaviour:
   - {fileID: 1995187952430404577, guid: a97b8ad2b86180e45900519c6edc74ef, type: 3}
   dashFrameInterval: 0.08
   dashOrderOffset: 1
+  flashFrames:
+  - {fileID: -855298285791758126, guid: 7a6639515554ddd4a879dae94abc770c, type: 3}
+  - {fileID: 6937817954938267909, guid: b472c49d6f1676048a62c387558b7867, type: 3}
+  - {fileID: -6470460504253458178, guid: 8fe87201dc92a564ab54a421169f16c1, type: 3}
+  - {fileID: -4178046375966092550, guid: 4a6e8ed81be8e114cb205b2baba491f0, type: 3}
+  - {fileID: 4130640169021434097, guid: 61d13179edb5c2d4698a3179ddac3af7, type: 3}
+  - {fileID: 3465286685962602723, guid: 7aaf9930482b848489bb0149feba7d91, type: 3}
+  - {fileID: 7028616704906629411, guid: f07b96d329e481a40bd5bdcdb6ae2582, type: 3}
+  - {fileID: 8288426215254106694, guid: bb6d7f3ac51a599498d4c663fcce6591, type: 3}
+  - {fileID: 4113829005332862926, guid: 271688fd40b82fd4880a3f509d36b536, type: 3}
+  - {fileID: -5099292496197868168, guid: a3e66e4782d735f4b98afdca08243721, type: 3}
+  - {fileID: -2966200626249415253, guid: e17d3aa167969e3438fc955871959260, type: 3}
+  - {fileID: -1540426309290004842, guid: e3202afe769f745478e8a4fc14d0b716, type: 3}
+  flashFrameInterval: 0.02
+  flashOrderOffset: 1
+  flashUseUnscaledTime: 1
+  flashTint: {r: 0.98039216, g: 0.98039216, b: 0.3137255, a: 1}
+  forceDefaultSpriteShader: 0
 --- !u!50 &6861478885976935308
 Rigidbody2D:
   serializedVersion: 5

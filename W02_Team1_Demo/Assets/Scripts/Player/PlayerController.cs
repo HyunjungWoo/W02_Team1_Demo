@@ -107,7 +107,15 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [SerializeField] private float dashFrameInterval = 0.04f; // 프레임 간격(초)
     [SerializeField] private int dashOrderOffset = 1;      // 캐릭터 뒤에 그리려면 -1
 
-    
+
+    // [Flash sequence]
+    [SerializeField] private Sprite[] flashFrames;            // 5장 넣기
+    [SerializeField] private float flashFrameInterval = 0.04f;
+    [SerializeField] private int flashOrderOffset = -1;     // 캐릭터 뒤:-1, 앞:+1
+    [SerializeField] private bool flashUseUnscaledTime = false;
+
+
+
 
 
 
@@ -476,9 +484,52 @@ public class PlayerController : MonoBehaviour, IPlayerController
         StartCoroutine(FadeAndDestroy(lineObj, flashDuration));
     }
 
+
+    [SerializeField] private Color flashTint = new Color(1f, 0.92f, 0.16f, 1f); // 노랑(알파 포함)
+    [SerializeField] private bool forceDefaultSpriteShader = false;            // 틴트 안 먹을 때 강제
+
+    private void SpawnFlashSequence()
+    {
+        if (flashFrames == null || flashFrames.Length == 0) return;
+        if (visualRenderer == null) visualRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (visualRenderer == null) return;
+
+        var go = new GameObject("FlashSequence");
+        go.transform.position = transform.position;
+        go.transform.rotation = Quaternion.identity;
+        go.transform.localScale = visualRenderer.transform.lossyScale;
+
+        var sr = go.AddComponent<SpriteRenderer>();
+        sr.sortingLayerID = visualRenderer.sortingLayerID;
+        sr.sortingOrder = visualRenderer.sortingOrder + flashOrderOffset;
+        sr.flipX = visualRenderer.flipX;
+        sr.flipY = visualRenderer.flipY;
+
+        // 머티리얼(셰이더) 선택: 기본은 원본과 동일, 틴트가 안 먹으면 기본 스프라이트 셰이더로 교체
+        if (forceDefaultSpriteShader)
+        {
+            // URP 2D 사용 시:
+            // sr.material = new Material(Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit"));
+            // 빌트인 파이프라인:
+            sr.material = new Material(Shader.Find("Sprites/Default"));
+        }
+        else
+        {
+            sr.sharedMaterial = visualRenderer.sharedMaterial;
+        }
+
+        // ★ 노란색 틴트 적용
+        sr.color = flashTint;
+
+        var seq = go.AddComponent<OneShotSpriteSequence>();
+        seq.Play(flashFrames, flashFrameInterval, flashUseUnscaledTime);
+    }
+
+
     private void WarpToKunai()
     {
         CreateLineObject();
+        SpawnFlashSequence();
         Vector3 warpPosition = currentKunai.transform.position;
 
         transform.position = warpPosition;
