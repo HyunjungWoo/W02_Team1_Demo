@@ -5,6 +5,7 @@ public class InGameManager : MonoBehaviour
 {
     public static InGameManager Instance;
     private Vector3 lastCheckpointPosition;
+    private int stage;
     [SerializeField] private PlayerController player;
     private void Awake()
     {
