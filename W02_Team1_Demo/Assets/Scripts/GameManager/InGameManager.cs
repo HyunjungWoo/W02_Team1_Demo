@@ -91,10 +91,12 @@ public class InGameManager : MonoBehaviour
     {
         // 씬 로딩이 완료된 후, 새로운 씬에 생성된 플레이어를 찾습니다.
         player = GameObject.FindGameObjectWithTag("Player");
+        IsDead = false;
     }
     public void PlayerDied()
     {
-
+        if(IsDead) return;
+        IsDead = true;
         StartCoroutine(RestartAfterAnimation());
     }
 
