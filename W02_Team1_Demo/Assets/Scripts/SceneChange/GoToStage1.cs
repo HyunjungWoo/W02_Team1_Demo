@@ -7,6 +7,7 @@ public class GoToStage1 : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
+            InGameManager.Instance.TouchCheckPoint(new Vector3(0, 0, 0));
             ChangeScene();
         }
     }

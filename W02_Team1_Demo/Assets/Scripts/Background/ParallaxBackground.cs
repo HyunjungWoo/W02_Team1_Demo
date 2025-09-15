@@ -5,6 +5,8 @@ public class ParallaxBackground : MonoBehaviour
     [SerializeField]
     private Transform cameraTransform;      // 카메라의 Transform 컴포넌트
 
+    [SerializeField] Vector3 xOffset;
+
     private Vector3 cameraStartPosition;    // 게임을 시작했을 때 카메라의 시작 위치
     private float distance;             // cameraStartPosition으로 부터 현재 카메라까지의 x 이동거리
 
@@ -18,7 +20,7 @@ public class ParallaxBackground : MonoBehaviour
     private void Awake()
     {
         // 게임을 시작할 때 카메라의 위치 저장 (이동 거리 계산용)
-        cameraStartPosition = cameraTransform.position;
+        cameraStartPosition = cameraTransform.position + xOffset;
 
         // 배경의 개수를 구하고, 배경 정보를 저장할 GameObject 배열 선언
         int backgroundCount = transform.childCount;
