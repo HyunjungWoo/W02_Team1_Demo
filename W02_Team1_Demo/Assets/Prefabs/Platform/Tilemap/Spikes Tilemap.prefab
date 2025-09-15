@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -6466191301434932479}
   - component: {fileID: -6421530354760091616}
   - component: {fileID: 5985919316501721171}
-  m_Layer: 6
+  m_Layer: 12
   m_Name: Spikes Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}

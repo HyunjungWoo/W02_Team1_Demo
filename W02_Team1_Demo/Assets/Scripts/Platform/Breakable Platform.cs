@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class BreakablePlatform : Platform
 {
@@ -24,13 +25,16 @@ public class BreakablePlatform : Platform
         yield return new WaitForSeconds(destroyDelay);
 
         // 플랫폼 비활성화
-        gameObject.SetActive(false);
+        gameObject.GetComponent<TilemapCollider2D>().enabled = false;
+        gameObject.GetComponent<TilemapRenderer>().enabled = false;
 
         // reappearDelay가 0보다 크면 다시 나타남
         if (reappearDelay > 0f)
         {
             yield return new WaitForSeconds(reappearDelay);
-            gameObject.SetActive(true);
+
+            gameObject.GetComponent<TilemapCollider2D>().enabled = true;
+            gameObject.GetComponent<TilemapRenderer>().enabled = true;
             isBreaking = false; // 다시 밟을 수 있음
         }
     }
