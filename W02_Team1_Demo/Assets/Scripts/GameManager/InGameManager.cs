@@ -19,6 +19,40 @@ public class InGameManager : MonoBehaviour
     private Vector3 lastCheckpointPosition;
     private int stage;
     [SerializeField] private GameObject player;
+
+   
+    /// 준홍 추가
+    void Start()
+    {
+        AndTime();
+        UpdateUIs();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && !IsDead && !IsCleared)
+        {
+            IsPlaying = !IsPlaying;
+            AndTime();
+            OnPauseChanged?.Invoke(IsPlaying); // 상태 변경 시 이벤트 호출
+        }
+
+        UpdateUIs();
+    }
+
+    void AndTime()
+    {
+        Time.timeScale = IsPlaying ? 1f : 0f;
+    }
+
+
+    void UpdateUIs()
+    {
+        if (pauseUI) pauseUI.SetActive(!IsPlaying && !IsDead && !IsCleared);
+        if (deathUI) deathUI.SetActive(IsDead);
+        if (clearUI) clearUI.SetActive(IsCleared);
+    }
+    // 준홍 추가 여기까지
     private void Awake()
     {
       

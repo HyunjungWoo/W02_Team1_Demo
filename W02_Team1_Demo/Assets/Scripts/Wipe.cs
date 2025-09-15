@@ -35,14 +35,7 @@ public class Wipe : MonoBehaviour
 
         if (animator != null)
         {
-            animator.SetBool("PlayWipe",true);
-        }
-    }
-    public void StopCloseWipe()
-    {
-        if (animator != null)
-        {
-            animator.SetBool("PlayWipe", false);
+            animator.SetTrigger("PlayWipe");
         }
     }
 }
