@@ -598,6 +598,17 @@ MonoBehaviour:
   flashFrameInterval: 0.02
   flashOrderOffset: 1
   flashUseUnscaledTime: 1
+  hitFrames:
+  - {fileID: 1509163340474212072, guid: 561359b091ea82b459921d2ad9390696, type: 3}
+  - {fileID: 3420901247331605307, guid: 561359b091ea82b459921d2ad9390696, type: 3}
+  - {fileID: -8550949073526619542, guid: 561359b091ea82b459921d2ad9390696, type: 3}
+  - {fileID: -3530373137291384134, guid: 561359b091ea82b459921d2ad9390696, type: 3}
+  - {fileID: 7281982565186357301, guid: 561359b091ea82b459921d2ad9390696, type: 3}
+  hitFrameInterval: 0.08
+  hitOrderOffset: 1
+  hitUseUnscaledTime: 1
+  horizontalEpsilon: 0.02
+  angleOffset: 0
   flashTint: {r: 0.98039216, g: 0.98039216, b: 0.3137255, a: 1}
   forceDefaultSpriteShader: 0
 --- !u!50 &6861478885976935308

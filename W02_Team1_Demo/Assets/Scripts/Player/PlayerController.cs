@@ -113,14 +113,20 @@ public class PlayerController : MonoBehaviour, IPlayerController
     // [Flash sequence]
     [SerializeField] private Sprite[] flashFrames;            // 5장 넣기
     [SerializeField] private float flashFrameInterval = 0.04f;
-    [SerializeField] private int flashOrderOffset = -1;     // 캐릭터 뒤:-1, 앞:+1
-    [SerializeField] private bool flashUseUnscaledTime = false;
+    [SerializeField] private int flashOrderOffset = 1;     // 캐릭터 뒤:-1, 앞:+1
+    [SerializeField] private bool flashUseUnscaledTime = true;
 
 
+    // [Hit sequence]
+    [SerializeField] private Sprite[] hitFrames;
+    [SerializeField] private float hitFrameInterval = 0.08f;
+    [SerializeField] private int hitOrderOffset = 1;
+    [SerializeField] private bool hitUseUnscaledTime = true;
 
 
-
-
+    // 미세 조정 옵션
+    [SerializeField] private float horizontalEpsilon = 0.02f; // "같은 수평"으로 볼 허용 오차
+    [SerializeField] private float angleOffset = 0f;
 
 
 
@@ -543,6 +549,59 @@ public class PlayerController : MonoBehaviour, IPlayerController
         seq.Play(flashFrames, flashFrameInterval, flashUseUnscaledTime);
     }
 
+    void SpawnHitSequence(Vector3 enemyPos, Vector3 playerPosition)
+    {
+        if (hitFrames == null || hitFrames.Length == 0) return;
+        if (visualRenderer == null) visualRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (visualRenderer == null) return;
+
+        // 플레이어 → 적 방향
+        Vector2 dir = (Vector2)(enemyPos - playerPosition);
+
+        Debug.Log(dir.x + " "  + dir.y);
+
+        bool isLeft = dir.x < 0f;
+        bool isHorizontal = Mathf.Abs(dir.y) <= horizontalEpsilon;
+
+        // 각도: 오른쪽 기준 0~90°만 사용 (대각선 크기만)
+        float angleZ;
+        if (isHorizontal)
+            angleZ = 0f;
+        else
+            angleZ = Mathf.Atan2(Mathf.Abs(dir.y), Mathf.Abs(dir.x)) * Mathf.Rad2Deg;
+
+        angleZ += angleOffset;
+
+        // 오브젝트 생성
+        var go = new GameObject("HitSequence");
+        go.transform.position = enemyPos;                                 // 적 위치
+        go.transform.rotation = Quaternion.Euler(0, 0, angleZ);           // z각도 회전
+        go.transform.localScale = visualRenderer.transform.lossyScale;      // 크기 매칭
+
+        if(dir.x < 0)
+        {
+            if(dir.y > 0) go.transform.rotation = Quaternion.Euler(180, 0, angleZ);
+        } else if (dir.x > 0)
+        {
+            if (dir.y < 0) go.transform.rotation = Quaternion.Euler(180, 0, angleZ);
+        }
+
+            //Vector3 scaleDir = visualRenderer.transform.lossyScale;    
+            //go.transform.localScale = scaleDir;
+
+            var sr = go.AddComponent<SpriteRenderer>();
+        sr.sortingLayerID = visualRenderer.sortingLayerID;
+        sr.sortingOrder = visualRenderer.sortingOrder + hitOrderOffset;
+        sr.sharedMaterial = visualRenderer.sharedMaterial;
+
+        // 좌/우 반평면에 따라 플립
+        sr.flipX = isLeft;
+
+        // 시퀀스 재생 (대쉬/플래시에서 쓰던 동일 클래스)
+        var seq = go.AddComponent<OneShotSpriteSequence>();
+        seq.Play(hitFrames, hitFrameInterval, hitUseUnscaledTime);
+    }
+
 
     private void WarpToKunai()
     {
@@ -550,6 +609,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         CreateLineObject();
         SpawnFlashSequence();
         Vector3 warpPosition = currentKunai.transform.position;
+        Vector3 playerPosition = transform.position;
 
         transform.position = warpPosition;
 
@@ -557,6 +617,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         if (enemyTransform != null && enemyTransform.CompareTag("Enemy"))
         {
             Debug.Log("쿠나이 적에게감");
+            SpawnHitSequence(enemyTransform.position, playerPosition);
             // 3. 적의 스크립트를 가져와서 '갈라지며 죽는' 함수를 호출합니다! 💥
             Enemy enemy = enemyTransform.GetComponent<Enemy>();
             if (enemy != null)
