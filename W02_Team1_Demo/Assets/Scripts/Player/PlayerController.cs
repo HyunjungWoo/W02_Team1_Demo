@@ -132,7 +132,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
         playerThrowAnimator = playerAnimation.GetComponent<Animator>();
-
         cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
     }
 
@@ -153,6 +152,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             Debug.LogError("superHeroLandingCheckBox가 연결되지 않았습니다!");
         }
+        InGameManager.Instance.RespawnAtCheckpoint();
 
 
     }
