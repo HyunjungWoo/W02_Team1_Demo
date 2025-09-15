@@ -2,17 +2,14 @@ using UnityEngine;
 
 public class EnemyWithKey : MonoBehaviour
 {
-    // 이 몬스터를 관리하는 LevelManager에 대한 참조
-    [SerializeField] private LevelManager levelManager;
-
-    // 몬스터가 죽을 때 호출되는 함수 (예시)
-    public void Die()
+    private void OnDestroy()
     {
-        if (levelManager != null)
+
+        // 싱글톤 LevelManager가 씬에 존재할 경우에만 안전하게 호출
+        if (LevelManager.Instance != null)
         {
-            // LevelManager에게 자신이 죽었음을 알립니다.
-            levelManager.OnEnemyDied();
+            // LevelManager에 있는 OnEnemyDied 함수를 호출
+            LevelManager.Instance.OnEnemyDied();
         }
-        Destroy(gameObject);
     }
 }
