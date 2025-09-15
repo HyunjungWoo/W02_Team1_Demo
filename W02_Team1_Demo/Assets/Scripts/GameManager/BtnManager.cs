@@ -11,6 +11,7 @@ public class BtnManager : MonoBehaviour
         if (!string.IsNullOrEmpty(sceneName))
         {
             Time.timeScale = 1f; // 혹시 게임이 멈춰있을 수 있으니 시간 흐르게 설정
+            InGameManager.Instance.TouchCheckPoint(new Vector3 (0, 0, 0));
             SceneManager.LoadScene(sceneName);
         }
         else
