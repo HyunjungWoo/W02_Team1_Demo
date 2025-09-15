@@ -70,6 +70,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [SerializeField] private int maxReflections = 30;
     [SerializeField] private Texture2D[] lineFrames;   // 프레임 이미지 넣기
     [SerializeField] private float frameInterval = 0.1f; // 프레임 교체 간격
+
     // 궤적 포인트 기록용
     private List<Vector3> linePoints = new List<Vector3>();
 
@@ -216,6 +217,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             isAiming = true;
             aimLine.enabled = true;
+            CursorManager.Instance.SetAimAssistActive(true);
         }
 
         if (isAiming)
@@ -230,6 +232,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
                 ThrowKunai();
                 isAiming = false;
                 aimLine.enabled = false;
+                CursorManager.Instance.SetAimAssistActive(false);
             }
         }
 
@@ -266,8 +269,22 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
 
         Vector2 playerPosition = transform.position;
-        Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 throwDirection = (mousePosition - playerPosition).normalized;
+        Vector2 throwDirection;
+
+        // 3. CursorManager에서 현재 조준된 적 정보를 가져옴
+        Transform lockedOnTarget = CursorManager.Instance.LockedOnEnemy;
+
+        if (lockedOnTarget != null)
+        {
+            // 조준된 적이 있다면, 해당 적의 중심으로 방향 설정
+            throwDirection = ((Vector2)lockedOnTarget.position - playerPosition).normalized;
+        }
+        else
+        {
+            // 없다면 기존처럼 마우스 방향으로 설정
+            Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            throwDirection = (mousePosition - playerPosition).normalized;
+        }
 
         // 애니메이션 실행
         ThrowAnimation(throwDirection);
