@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2540214157093402536}
   - component: {fileID: 374568287870469126}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Telegraph
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4374153996059314634}
   - component: {fileID: 4262231813942290808}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: EnemyGFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +185,7 @@ GameObject:
   - component: {fileID: 4202492057872561227}
   - component: {fileID: 4333468865474468704}
   - component: {fileID: 1993437709355709594}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: AttackSprite_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -295,7 +295,7 @@ GameObject:
   - component: {fileID: 1531222872136748739}
   - component: {fileID: 7539771857553934116}
   - component: {fileID: 51067394843741517}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Hitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -393,9 +393,10 @@ GameObject:
   - component: {fileID: 8221402880498664114}
   - component: {fileID: 1974152711181547693}
   - component: {fileID: 6495128618125403764}
-  m_Layer: 0
+  - component: {fileID: 3482300651953409449}
+  m_Layer: 9
   m_Name: GroundMeleeEnemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -606,3 +607,16 @@ MonoBehaviour:
   accel: 30
   nextWaypointDistance: 1
   pathUpdateInterval: 0.5
+--- !u!114 &3482300651953409449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8803649922106347572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469dff5e432bb554a8f3be0a6a6beb21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slicedBodyPrefab: {fileID: 4291087216277814506, guid: ce1d9c2fd6190dd4da2ca8d8b110126e, type: 3}
