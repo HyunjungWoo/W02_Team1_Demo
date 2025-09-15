@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,7 +13,7 @@ public class InGameManager : MonoBehaviour
     public GameObject pauseUI;
     public GameObject deathUI;
     public GameObject clearUI;
-
+    public Animator blackPanelAnimator; // 인스펙터에 연결할 Animator 변수
     public static event System.Action<bool> OnPauseChanged;
     public static InGameManager Instance;
     private Vector3 lastCheckpointPosition;
@@ -59,6 +60,19 @@ public class InGameManager : MonoBehaviour
     }
     public void PlayerDied()
     {
+
+        StartCoroutine(RestartAfterAnimation());
+    }
+
+    private IEnumerator RestartAfterAnimation()
+    {
+        Wipe.Instance.animator.Rebind();
+        Wipe.Instance.animator.Update(0f);
+        Wipe.Instance.StartCloseWipe(player.transform.position);
+        float animationDuration = 1f; // 예시: 1.5초
+        yield return new WaitForSeconds(animationDuration);
+
+        // 3. 씬 재시작
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     public void RespawnAtCheckpoint()
