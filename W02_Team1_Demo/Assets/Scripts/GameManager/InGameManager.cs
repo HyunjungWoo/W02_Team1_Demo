@@ -95,7 +95,7 @@ public class InGameManager : MonoBehaviour
     }
     public void PlayerDied()
     {
-        if(IsDead) return;
+        if (IsDead) return;
         IsDead = true;
         StartCoroutine(RestartAfterAnimation());
     }
@@ -107,7 +107,6 @@ public class InGameManager : MonoBehaviour
         Wipe.Instance.StartCloseWipe(player.transform.position);
         float animationDuration = 1f; // 예시: 1.5초
         yield return new WaitForSeconds(animationDuration);
-
         // 3. 씬 재시작
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

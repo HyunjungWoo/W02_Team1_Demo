@@ -512,6 +512,7 @@ GameObject:
   - component: {fileID: 9015550511070049122}
   - component: {fileID: 8880927873227072472}
   - component: {fileID: 5524559016688831797}
+  - component: {fileID: 3799662807414662798}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -837,6 +838,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &3799662807414662798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759391789214341685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c1096f8eef60d147bf945337d376aca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHp: 30
+  invincibilityDuration: 1.5
 --- !u!1001 &5997869743776848054
 PrefabInstance:
   m_ObjectHideFlags: 0
