@@ -20,6 +20,7 @@ public class CameraZoneTrigger : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log("123");
         if (triggered && oneShot) return;
         if (!other.CompareTag("Player")) return;
 
