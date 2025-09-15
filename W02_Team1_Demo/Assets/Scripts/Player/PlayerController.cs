@@ -189,9 +189,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Tarodev의 이동 및 점프 입력 처리
         frameInput = new FrameInput
         {
-            JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
-            JumpHeld = Input.GetButton("Jump") || Input.GetKey(KeyCode.C),
-            DashDown = Input.GetButton("Fire3") || Input.GetKeyDown(KeyCode.X),
+            JumpDown = Input.GetButtonDown("Jump") ,
+            JumpHeld = Input.GetButton("Jump") ,
+            DashDown = Input.GetButton("Fire3") ,
             Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
         };
 
