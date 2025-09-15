@@ -70,6 +70,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [SerializeField] private int maxReflections = 30;
     [SerializeField] private Texture2D[] lineFrames;   // 프레임 이미지 넣기
     [SerializeField] private float frameInterval = 0.1f; // 프레임 교체 간격
+
     // 궤적 포인트 기록용
     private List<Vector3> linePoints = new List<Vector3>();
 
@@ -89,8 +90,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private float slowdownFactor = 0.3f; // 얼마나 느려지게 할지 (0.05 = 5%)
     private float slowdownLength = 1f;   // 슬로우 모션 지속 시간 (초)
     Coroutine slowMotionCoroutine;
-    private float warpSlowdownFactor = 0.3f; // 얼마나 느려지게 할지 (0.05 = 5%)
-    private float warpSlowdownLength = 1f;   // 슬로우 모션 지속 시간 (초)
+    public float warpSlowdownFactor = 0.1f; // 얼마나 느려지게 할지 (0.05 = 5%)
+    public float warpSlowdownLength = 0.5f;   // 슬로우 모션 지속 시간 (초)
     Coroutine warpSlowMotionCoroutine;
     #endregion
 
@@ -216,6 +217,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             isAiming = true;
             aimLine.enabled = true;
+            CursorManager.Instance.SetAimAssistActive(true);
         }
 
         if (isAiming)
@@ -230,6 +232,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
                 ThrowKunai();
                 isAiming = false;
                 aimLine.enabled = false;
+                CursorManager.Instance.SetAimAssistActive(false);
             }
         }
 
@@ -266,8 +269,22 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
 
         Vector2 playerPosition = transform.position;
-        Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 throwDirection = (mousePosition - playerPosition).normalized;
+        Vector2 throwDirection;
+
+        // 3. CursorManager에서 현재 조준된 적 정보를 가져옴
+        Transform lockedOnTarget = CursorManager.Instance.LockedOnEnemy;
+
+        if (lockedOnTarget != null)
+        {
+            // 조준된 적이 있다면, 해당 적의 중심으로 방향 설정
+            throwDirection = ((Vector2)lockedOnTarget.position - playerPosition).normalized;
+        }
+        else
+        {
+            // 없다면 기존처럼 마우스 방향으로 설정
+            Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            throwDirection = (mousePosition - playerPosition).normalized;
+        }
 
         // 애니메이션 실행
         ThrowAnimation(throwDirection);
@@ -618,14 +635,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // 1. 시간을 느리게 만듭니다.
         Time.timeScale = slowdownFactor;
         // 2. FixedUpdate의 호출 주기도 시간에 맞춰 느려지므로, 이를 보정해줍니다.
-        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+        //Time.fixedDeltaTime = Time.timeScale * 0.02f;
         yield return new WaitForSecondsRealtime(slowdownLength);
 
         // --- 효과 종료 ---
         // 1. 시간을 원래 속도로 되돌립니다.
         Time.timeScale = 1f;
         // 2. FixedUpdate 시간도 원래대로 복구합니다.
-        Time.fixedDeltaTime = 0.02f;
+        //Time.fixedDeltaTime = 0.02f;
 
     }
 
@@ -646,14 +663,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // 1. 시간을 느리게 만듭니다.
         Time.timeScale = warpSlowdownFactor;
         // 2. FixedUpdate의 호출 주기도 시간에 맞춰 느려지므로, 이를 보정해줍니다.
-        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+       // Time.fixedDeltaTime = Time.timeScale * 0.02f;
         yield return new WaitForSecondsRealtime(warpSlowdownLength);
 
         // --- 효과 종료 ---
         // 1. 시간을 원래 속도로 되돌립니다.
         Time.timeScale = 1f;
         // 2. FixedUpdate 시간도 원래대로 복구합니다.
-        Time.fixedDeltaTime = 0.02f;
+        //Time.fixedDeltaTime = 0.02f;
 
     }
     // 적 밀어내는 박스 사라지게 하는 함수. 날라가고 0.1~0.3초뒤 끌것.

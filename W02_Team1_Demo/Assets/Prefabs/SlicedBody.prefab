@@ -292,6 +292,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2374956083485114641}
   - component: {fileID: -826673074204676684}
+  - component: {fileID: -6543121663584157526}
   m_Layer: 0
   m_Name: SlicedBody
   m_TagString: Untagged
@@ -361,6 +362,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-6543121663584157526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4291087216277814506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dae6d0507fe57cd40a5ab7bc83a2f3a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  delayInSeconds: 2
 --- !u!1 &4764429758818488602
 GameObject:
   m_ObjectHideFlags: 0
