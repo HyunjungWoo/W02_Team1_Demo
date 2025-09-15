@@ -22548,7 +22548,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2967552200225548538, guid: 09a4930ae6b6ddb469f87c40cbfd7ec3, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4117531745548158812, guid: 09a4930ae6b6ddb469f87c40cbfd7ec3, type: 3}
       propertyPath: cameraTransform
