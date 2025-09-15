@@ -6,6 +6,10 @@ public class HitboxDamager : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (!other.CompareTag("Player"))
+        {
+            return;
+        }
         // 충돌한 상대에게 HealthSystem 컴포넌트가 있는지 확인
         HealthSystem targetHealth = other.GetComponent<HealthSystem>();
 

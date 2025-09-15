@@ -76,4 +76,23 @@ public class HealthSystem : MonoBehaviour
 
         isInvincible = false;
     }
+
+    void OnEnable()
+    {
+        if (InGameManager.Instance != null)
+        {
+            OnDeath += InGameManager.Instance.PlayerDied;
+        }
+    }
+
+    // Player가 비활성화되거나 파괴될 때 호출됩니다.
+    void OnDisable()
+    {
+        // 구독했던 PlayerDied 함수를 해지합니다.
+        // 이걸 하지 않으면 오류가 발생할 수 있습니다! (매우 중요)
+        if (InGameManager.Instance != null)
+        {
+            OnDeath -= InGameManager.Instance.PlayerDied;
+        }
+    }
 }

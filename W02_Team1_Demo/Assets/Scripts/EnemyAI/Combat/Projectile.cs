@@ -20,7 +20,7 @@ public class Projectile : MonoBehaviour
     {
         dir = direction.normalized;
         rb = GetComponent<Rigidbody2D>();
-        if(rb == null)
+        if (rb == null)
         {
             Debug.Log("리즈드바디 넣으세요");
         }
@@ -30,7 +30,7 @@ public class Projectile : MonoBehaviour
     void Update()
     {
         transform.position += (Vector3)(dir * speed * Time.deltaTime);
-        
+
         // gameobject 날라가는 direction방향으로 회전
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
@@ -39,11 +39,11 @@ public class Projectile : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        // 지정한 레이어에만 반응
-        if (((1 << col.gameObject.layer) & hitMask) != 0)
+        // 충돌한 객체의 태그가 "Player"가 아니면 함수를 즉시 종료
+        if (!col.CompareTag("Player"))
         {
-            // TODO: 대상의 체력 컴포넌트 찾아 damage 적용
-            Destroy(gameObject);
+            return;
         }
+        Destroy(gameObject);
     }
 }

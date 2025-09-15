@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class InGameManager : MonoBehaviour
 {
+
     [Header("게임 상태 관련")]
     public static bool IsPlaying = true;
     public static bool IsDead = false;
