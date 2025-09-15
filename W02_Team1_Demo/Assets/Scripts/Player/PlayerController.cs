@@ -132,7 +132,6 @@ public class PlayerController : MonoBehaviour, IPlayerController
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
         playerThrowAnimator = playerAnimation.GetComponent<Animator>();
-
         cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
     }
 
@@ -153,6 +152,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             Debug.LogError("superHeroLandingCheckBox가 연결되지 않았습니다!");
         }
+        InGameManager.Instance.RespawnAtCheckpoint();
 
 
     }
@@ -189,9 +189,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // Tarodev의 이동 및 점프 입력 처리
         frameInput = new FrameInput
         {
-            JumpDown = Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.C),
-            JumpHeld = Input.GetButton("Jump") || Input.GetKey(KeyCode.C),
-            DashDown = Input.GetButton("Fire3") || Input.GetKeyDown(KeyCode.X),
+            JumpDown = Input.GetButtonDown("Jump") ,
+            JumpHeld = Input.GetButton("Jump") ,
+            DashDown = Input.GetButton("Fire3") ,
             Move = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"))
         };
 
