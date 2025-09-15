@@ -90,8 +90,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
     private float slowdownFactor = 0.3f; // 얼마나 느려지게 할지 (0.05 = 5%)
     private float slowdownLength = 1f;   // 슬로우 모션 지속 시간 (초)
     Coroutine slowMotionCoroutine;
-    private float warpSlowdownFactor = 0.3f; // 얼마나 느려지게 할지 (0.05 = 5%)
-    private float warpSlowdownLength = 1f;   // 슬로우 모션 지속 시간 (초)
+    public float warpSlowdownFactor = 0.1f; // 얼마나 느려지게 할지 (0.05 = 5%)
+    public float warpSlowdownLength = 0.5f;   // 슬로우 모션 지속 시간 (초)
     Coroutine warpSlowMotionCoroutine;
     #endregion
 
@@ -635,14 +635,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // 1. 시간을 느리게 만듭니다.
         Time.timeScale = slowdownFactor;
         // 2. FixedUpdate의 호출 주기도 시간에 맞춰 느려지므로, 이를 보정해줍니다.
-        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+        //Time.fixedDeltaTime = Time.timeScale * 0.02f;
         yield return new WaitForSecondsRealtime(slowdownLength);
 
         // --- 효과 종료 ---
         // 1. 시간을 원래 속도로 되돌립니다.
         Time.timeScale = 1f;
         // 2. FixedUpdate 시간도 원래대로 복구합니다.
-        Time.fixedDeltaTime = 0.02f;
+        //Time.fixedDeltaTime = 0.02f;
 
     }
 
@@ -663,14 +663,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // 1. 시간을 느리게 만듭니다.
         Time.timeScale = warpSlowdownFactor;
         // 2. FixedUpdate의 호출 주기도 시간에 맞춰 느려지므로, 이를 보정해줍니다.
-        Time.fixedDeltaTime = Time.timeScale * 0.02f;
+       // Time.fixedDeltaTime = Time.timeScale * 0.02f;
         yield return new WaitForSecondsRealtime(warpSlowdownLength);
 
         // --- 효과 종료 ---
         // 1. 시간을 원래 속도로 되돌립니다.
         Time.timeScale = 1f;
         // 2. FixedUpdate 시간도 원래대로 복구합니다.
-        Time.fixedDeltaTime = 0.02f;
+        //Time.fixedDeltaTime = 0.02f;
 
     }
     // 적 밀어내는 박스 사라지게 하는 함수. 날라가고 0.1~0.3초뒤 끌것.
