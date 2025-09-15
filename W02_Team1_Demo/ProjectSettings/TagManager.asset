@@ -12,6 +12,7 @@ TagManager:
   - ReflectionPlatform
   - LockPlatform
   - DeadEnemy
+  - Key
   layers:
   - Default
   - TransparentFX
