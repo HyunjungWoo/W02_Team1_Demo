@@ -10,6 +10,11 @@ public class CursorManager : MonoBehaviour
     [SerializeField] private Texture2D lockOnCursorTexture;
     [SerializeField] private LayerMask enemyLayer;
 
+    [Header("조준 방해물 설정")]
+    [SerializeField] private Transform playerTransform; 
+    [SerializeField] private LayerMask wallLayer;       
+    [SerializeField] private Texture2D obstructedCursorTexture;  
+
     [Header("커서 핫스팟 (중심점)")]
     [SerializeField] private Vector2 hotSpotOffset = Vector2.zero;
     
@@ -21,16 +26,7 @@ public class CursorManager : MonoBehaviour
 
     private void Awake()
     {
-        // 싱글톤 패턴 구현
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-            // DontDestroyOnLoad(gameObject); // 씬이 바뀌어도 파괴되지 않게 하려면 주석 해제
-        }
+       if(Instance == null) Instance = this;
     }
 
     private void Start()
@@ -69,16 +65,45 @@ public class CursorManager : MonoBehaviour
             .OrderBy(enemy => Vector2.Distance(mousePosition, enemy.transform.position))
             .FirstOrDefault()?.transform;
 
-        // 조준 대상 유무에 따라 커서 모양 변경
+        // 조준 대상이 있다면, 플레이어와의 사이에 벽이 있는지 확인
         if (LockedOnEnemy != null)
         {
-            SetCursor(lockOnCursorTexture);
+            // 1. 플레이어가 할당되었는지 안전하게 확인
+            if (playerTransform == null)
+            {
+                Debug.LogError("Player Transform이 CursorManager에 할당되지 않았습니다! Raycast를 실행할 수 없습니다.");
+                ResetToDefaultCursor(); // 오류 발생 시 기본 커서로 되돌림
+                return;
+            }
+
+            // 2. Raycast에 필요한 정보 계산
+            Vector2 startPoint = playerTransform.position;
+            Vector2 endPoint = LockedOnEnemy.position;
+            Vector2 direction = (endPoint - startPoint).normalized;
+            float distance = Vector2.Distance(startPoint, endPoint);
+
+            // 3. Raycast 실행 (wallLayer만 감지하도록)
+            RaycastHit2D hit = Physics2D.Raycast(startPoint, direction, distance, wallLayer);
+
+            // 4. Raycast 결과에 따라 커서 변경
+            if (hit.collider != null)
+            {
+                // 벽에 막혔을 경우: 방해물 커서로 변경
+                SetCursor(obstructedCursorTexture);
+            }
+            else
+            {
+                // 시야가 확보된 경우: 조준 커서로 변경
+                SetCursor(lockOnCursorTexture);
+            }
         }
         else
         {
+            // 조준 대상이 없을 경우
             ResetToDefaultCursor();
         }
     }
+
     private void SetCursor(Texture2D cursorTexture)
     {
         if (cursorTexture == null)

@@ -45,8 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aimAssistRadius: 1
-  lockOnCursorTexture: {fileID: 2800000, guid: 6ac674f59b5bd4e46b214031183ac818, type: 3}
+  lockOnCursorTexture: {fileID: 2800000, guid: d3566177bcc0c9e4aafc760ffb097928, type: 3}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 512
+  playerTransform: {fileID: 0}
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 4160
+  obstructedCursorTexture: {fileID: 2800000, guid: 0964795845ff1394a9698f90850d966a, type: 3}
   hotSpotOffset: {x: 0, y: 0}
