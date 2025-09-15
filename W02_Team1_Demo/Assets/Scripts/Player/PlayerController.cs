@@ -128,6 +128,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
     [SerializeField] private float horizontalEpsilon = 0.02f; // "같은 수평"으로 볼 허용 오차
     [SerializeField] private float angleOffset = 0f;
 
+    // 스프라이트 애니메이션 컨트롤러
+    Animator spriteAnimation;
+
 
 
 
@@ -139,6 +142,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<CapsuleCollider2D>();
         playerThrowAnimator = playerAnimation.GetComponent<Animator>();
+        spriteAnimation = GetComponent<Animator>();
         cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
     }
 
@@ -346,6 +350,7 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // 50% 확률로 throw1, throw2 실행
         int rand = UnityEngine.Random.Range(0, animationClipNames.Length);
         playerThrowAnimator.SetTrigger(animationClipNames[rand]);
+        spriteAnimation.SetTrigger(animationClipNames[rand]);
     }
 
 
@@ -800,6 +805,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
             endedJumpEarly = false;
             GroundedChanged?.Invoke(true, Mathf.Abs(frameVelocity.y));
 
+            // 애니메이션 그라운드 확인
+            spriteAnimation.SetBool("isGround", true);
+
         }
         else if (grounded && !groundHit)
         {
@@ -807,6 +815,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
             frameLeftGrounded = time;
             GroundedChanged?.Invoke(false, 0);
 
+            // 애니메이션 그라운드 확인
+            spriteAnimation.SetBool("isGround", false);
         }
 
         // 벽 충돌 검사
@@ -843,6 +853,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
         coyoteUsable = false;
         frameVelocity.y = stats.JumpPower;
         Jumped?.Invoke();
+
+        // 점프 애니메이션
+        spriteAnimation.SetFloat("isJump", frameVelocity.y);
     }
 
     private void ExecuteWallJump()
@@ -859,6 +872,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
         // -wallDirection은 항상 벽의 반대 방향이 됨
         Vector2 force = new Vector2(stats.WallJumpPower.x * -wallDirection, stats.WallJumpPower.y);
         frameVelocity = force;
+
+        // 점프 애니메이션
+        spriteAnimation.SetFloat("isJump", frameVelocity.y);
 
         // 벽 점프 후에는 반대 방향을 보도록 캐릭터를 뒤집어 줌
         transform.localScale = new Vector3(-wallDirection, 1, 1);
@@ -903,6 +919,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             Vector2 dashDirection;
 
+            // 대쉬 애니메이션
+            spriteAnimation.SetTrigger("isDash");
+
 
 
             if (frameInput.Move.x != 0) // 좌우 입력이 있을 때 
@@ -921,6 +940,8 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
             // 대쉬 효과
             SpawnDashSequence();
+
+            
         }
 
         if (isDashing)
@@ -945,10 +966,14 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             bool isPushingWall = (onRightWall && frameInput.Move.x > 0) || (onLeftWall && frameInput.Move.x < 0);
 
+
             if (isPushingWall)
             {
                 isWallSliding = true;
                 wallStickTimer = stats.WallStickDuration;
+
+                // wall 애니메이션
+                spriteAnimation.SetBool("isWall", true);
             }
             else
             {
@@ -965,6 +990,9 @@ public class PlayerController : MonoBehaviour, IPlayerController
         else
         {
             isWallSliding = false;
+
+            // wall 애니메이션
+            spriteAnimation.SetBool("isWall", false);
         }
 
         if (wasWallSliding && !isWallSliding) // 벽 슬라이딩 상태가 true에서 false로 바뀌는 '순간' 시간을 기록
@@ -994,10 +1022,17 @@ public class PlayerController : MonoBehaviour, IPlayerController
         {
             var deceleration = grounded ? stats.GroundDeceleration : stats.AirDeceleration;
             frameVelocity.x = Mathf.MoveTowards(frameVelocity.x, 0, deceleration * Time.fixedDeltaTime);
+
+
+            // idle 애니메이션
+            spriteAnimation.SetBool("isMove", false);
         }
         else
         {
-            frameVelocity.x = Mathf.MoveTowards(frameVelocity.x, frameInput.Move.x * stats.MaxSpeed, stats.Acceleration * Time.fixedDeltaTime);
+            frameVelocity.x = Mathf.MoveTowards(frameVelocity.x, frameInput.Move.x * stats.MaxSpeed, stats.Acceleration * Time.fixedDeltaTime);// idle 애니메이션
+
+            // run 
+            spriteAnimation.SetBool("isMove", true);
         }
     }
 
@@ -1008,13 +1043,17 @@ public class PlayerController : MonoBehaviour, IPlayerController
 
         if (grounded && frameVelocity.y <= 0f)
         {
-            frameVelocity.y = stats.GroundingForce;
+            //frameVelocity.y = stats.GroundingForce;
+
         }
         else
         {
             var inAirGravity = stats.FallAcceleration;
             if (endedJumpEarly && frameVelocity.y > 0) inAirGravity *= stats.JumpEndEarlyGravityModifier;
             frameVelocity.y = Mathf.MoveTowards(frameVelocity.y, -stats.MaxFallSpeed, inAirGravity * Time.fixedDeltaTime);
+
+            // falling
+            spriteAnimation.SetFloat("isJump", frameVelocity.y);
         }
     }
 
