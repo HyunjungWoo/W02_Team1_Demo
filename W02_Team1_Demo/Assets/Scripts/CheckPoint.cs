@@ -7,7 +7,7 @@ public class CheckPoint : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            InGameManager.Instance.TouchCheckPoint(stage, transform.position);
+            InGameManager.Instance.TouchCheckPoint(transform.position);
         }
     }
 }

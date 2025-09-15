@@ -73,7 +73,7 @@ public class InGameManager : MonoBehaviour
         lastCheckpointPosition = new Vector3( -0, 3, 0);
     }
 
-    public void TouchCheckPoint(int stage, Vector3 checkPointPos)
+    public void TouchCheckPoint(Vector3 checkPointPos)
     {
         lastCheckpointPosition = checkPointPos;
         Debug.Log("새로운 체크포인트 저장됨: " + lastCheckpointPosition);
