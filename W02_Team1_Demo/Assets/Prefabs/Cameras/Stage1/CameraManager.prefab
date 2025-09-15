@@ -45,10 +45,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cams:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 4301831348874763700, guid: 05849452f947c694fbb6dc86848c7de2, type: 3}
+  - {fileID: 7733379606759721894, guid: e01b3906738748f43a8685f918dcf822, type: 3}
+  - {fileID: 2759521200151234274, guid: 2aeff3721bce2f14799a796ffc73132a, type: 3}
+  - {fileID: 5195585365355819653, guid: 3d2514bdc5bd3b347a793f1d46d10c1a, type: 3}
+  - {fileID: 94462733927636191, guid: a8c70a98762302a49adaa9f349c0ea45, type: 3}
   basePriority: 10
   activePriority: 100
